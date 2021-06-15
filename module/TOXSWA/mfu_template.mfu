@@ -1,0 +1,10 @@
+*  Downstream mass fluxes from reach: <ReachID>
+*  Number of substances:   1
+*  Parent substance: <substanceName>
+*  Metabolite substances:
+*
+*  Mass flown out in time step ending at Time
+*
+*  Time                Date                 MasDwnWatLay
+*                                           CMP_A       
+*                                                (g)

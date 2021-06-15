@@ -1,0 +1,140 @@
+* Input file for TOXSWA                                     (c) Wageningen University & Research
+*-----------------------------------------------------------------------------------------------
+
+table ReachUp
+end_table
+<downstreamReach>   ReachDwn
+
+*** Section 0: Run identification
+Melsterbeek Location
+1           WaterbodyID
+Pome        CropName
+FOCUS       SedimentTypeID
+<substanceName>        SubstanceName
+Xplcit      ApplicationScheme
+
+*** Section 1: Control
+CASCADE     CallingProgram
+1           CallingProgramVersion
+<startDateSim> TimStart
+<endDateSim> TimEnd
+Hourly      OptInp
+ExtModel    OptHyd
+OnLine      OptTem
+Calc        OptTimStp  ! Option for time step in mass balance calculation [Input, Calc]
+No         OptCalcStabilityWater
+No         OptCalcStabilitySediment
+<MaxTimStpWat>        MaxTimStpWat (s) ! Maximum calculation time step in water layer [0.001|3600]
+<MaxTimStpSed>        MaxTimStpSed (s) ! Maximum calculation time step in sediment [0.001|3600]
+
+* IOMode: options for screen output control, for use for grid computing    (hierover even overleg)
+* IOMode_Std    standard screen
+* IOMode_Full   full screen
+IOMode_Std    IOMode        ! Option selected for screen output [IOMode_Std, IOMode_Full]
+
+*** Section 2: Waterbody
+table WaterBody
+end_table
+11         ConSus (g.m-3)
+0.09       CntOmSusSol (g.g-1)
+0          AmaMphWatLay (g.m-2)
+
+*** Section 3: Hydrology:
+SimpleDitch OptFloWat
+WaterCourse OptWaterSystemType
+Fischer     OptDis
+
+*** Section 4: Sediment
+table SedimentProfile
+ThiHor NumLay
+(m)
+0.00024   8
+0.00012   2
+0.00024   2
+0.0009    3
+0.0015    2
+0.004     2
+0.003     1
+0.01      2
+0.03      3
+0.02      1
+0.03      1
+end_table
+Input      OptSedProperties
+table  horizon SedimentProperties
+Nr     Rho        CntOm     ThetaSat   CofDifRel
+       (kg.m-3)   (kg.kg-1)  (m3.m-3)   (-)
+1         800.      0.09      0.6       0.6
+2         800.      0.09      0.6       0.6
+3         800.      0.09      0.6       0.6
+4         800.      0.09      0.6       0.6
+5         800.      0.09      0.6       0.6
+6         800.      0.09      0.6       0.6
+7         800.      0.09      0.6       0.6
+8         800.      0.09      0.6       0.6
+9         800.      0.09      0.6       0.6
+10        800.      0.09      0.6       0.6
+11        800.      0.09      0.6       0.6
+end_table
+0.      FlwWatSpg (m3.m-2.d-1)
+table horizon DispersionLength
+Nr     LenDisSedLiq
+         (m)
+1         0.015
+2         0.015
+3         0.015
+4         0.015
+5         0.015
+6         0.015
+7         0.015
+8         0.015
+9         0.015
+10        0.015
+11        0.015
+end_table
+
+*** Section 5: Weather
+temperature.met MeteoStation
+DailyAir OptMetInp
+
+*** Section 6: Temperature
+
+*** Section 7: Substance
+table compounds
+end_table
+table FraPrtDauWat (mol.mol-1)
+end_table
+table FraPrtDauSed (mol.mol-1)
+end_table
+<substanceProperties>
+
+*** Section 8: Loadings
+MFU      OptLoa
+Yes      OptLoaStr
+table Loadings
+end_table
+
+*** Section 9: Initial and boundary conditions for mass balance equations
+0          ConSysWatIni (g.m-3)
+table interpolate CntSysSedIni (mg.kg-1)
+end_table
+0          ConAir (g.m-3)
+0          ConWatSpg (g.m-3)
+
+*** Section 10: Output control
+No        OptDelOutFiles
+DaysFromSta  DateFormat
+e14.6     RealFormat
+Hour      OptDelTimPrn
+No        PrintMasStrTgt
+0.01      ThiLayTgt1 (m)
+No        OptOutputThiLayTgt2
+All       OptOutputDistances
+None      OptOutputDepths
+table HorVertProfiles
+end_table
+DutchRegistration OptReport
+Yes       ExposureReport
+0         InitYears (-)
+No        PrintCumulatives
+<outputVariables>
