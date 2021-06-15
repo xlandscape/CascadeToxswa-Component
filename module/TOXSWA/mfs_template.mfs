@@ -1,0 +1,6 @@
+*  mfs file
+*  Mass flux time step: 1
+*  ReachID(s) of upstream reach(es): <upstreamReachIdList>
+*                        
+*  Time  Date        Time  Mass flux time step
+*  (-)   (-)                   (s)
