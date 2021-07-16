@@ -447,7 +447,7 @@ class CascadeToxswa(base.Component):
         self.outputs["ConLiqWatTgtAvg"].set_values(
             np.ndarray,
             shape=(number_time_steps, reaches.shape[0]),
-            dtype=np.float,
+            data_type=np.float,
             chunks=(min(65536, number_time_steps), 1),
             scales="time/hour, space/base_geometry",
             unit="g/m³"
@@ -455,7 +455,7 @@ class CascadeToxswa(base.Component):
         self.outputs["CntSedTgt1"].set_values(
             np.ndarray,
             shape=(number_time_steps, reaches.shape[0]),
-            dtype=np.float,
+            data_type=np.float,
             chunks=(min(65536, number_time_steps), 1),
             scales="time/hour, space/base_geometry"
         )
