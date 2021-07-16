@@ -11,10 +11,11 @@ import attrib
 
 class CascadeToxswa(base.Component):
     """
-    A component that encapsulates the CacscadeToxswa module for usage within the Landscape Model.
+    A component that encapsulates the CascadeToxswa module for usage within the Landscape Model.
     """
     # RELEASES
     VERSION = base.VersionCollection(
+        base.VersionInfo("2.0.4", "2021-07-16"),
         base.VersionInfo("2.0.3", "2021-02-19"),
         base.VersionInfo("2.0.2", "2021-01-28"),
         base.VersionInfo("2.0.1", "2020-12-03"),
@@ -63,6 +64,9 @@ class CascadeToxswa(base.Component):
     VERSION.added("2.0.1", "Changelog and release history")
     VERSION.added("2.0.2", "Module updated to version 0.5")
     VERSION.changed("2.0.3", "Removed soil bottom width parameter")
+    VERSION.added("2.0.4", ".gitignore")
+    VERSION.fixed("2.0.4", "Retrieval of output data type")
+    VERSION.changed("2.0.4", "Spelling of input names")
 
     def __init__(self, name, observer, store):
         super(CascadeToxswa, self).__init__(name, observer, store)
@@ -89,7 +93,7 @@ class CascadeToxswa(base.Component):
                 self.default_observer
             ),
             base.Input(
-                "TimeseriesStart",
+                "TimeSeriesStart",
                 (attrib.Class(datetime.date, 1), attrib.Unit(None, 1), attrib.Scales("global", 1)),
                 self.default_observer
             ),
@@ -197,7 +201,7 @@ class CascadeToxswa(base.Component):
                 self.default_observer
             ),
             base.Input(
-                "CoefficientForEquilibriumSorptionInSediment",
+                "CoefficientForEquilibriumAdsorptionInSediment",
                 (attrib.Class(float, 1), attrib.Unit("l/kg", 1), attrib.Scales("global", 1)),
                 self.default_observer
             ),
@@ -212,7 +216,7 @@ class CascadeToxswa(base.Component):
                 self.default_observer
             ),
             base.Input(
-                "CoefficientForEquilibriumSorptionOfSuspendedSoils",
+                "CoefficientForEquilibriumAdsorptionOfSuspendedSoils",
                 (attrib.Class(float, 1), attrib.Unit("l/kg", 1), attrib.Scales("global", 1)),
                 self.default_observer
             ),
@@ -227,7 +231,7 @@ class CascadeToxswa(base.Component):
                 self.default_observer
             ),
             base.Input(
-                "CoefficientForLinearSorptionOnMacrophytes",
+                "CoefficientForLinearAdsorptionOnMacrophytes",
                 (attrib.Class(float, 1), attrib.Unit("l/kg", 1), attrib.Scales("global", 1)),
                 self.default_observer
             ),
@@ -276,7 +280,7 @@ class CascadeToxswa(base.Component):
         hydrography = self.inputs["Hydrography"].read().values
         suspended_solids = self.inputs["SuspendedSolids"].read().values
         reaches = self.inputs["Reaches"].read().values
-        timeseries_start = self.inputs["TimeseriesStart"].read().values
+        time_series_start = self.inputs["TimeSeriesStart"].read().values
         number_time_steps = self.inputs["WaterDischarge"].describe()["shape"][0]
         driver = ogr.GetDriverByName("ESRI Shapefile")
         data_source = driver.Open(hydrography, 0)
@@ -294,6 +298,7 @@ class CascadeToxswa(base.Component):
                 f.write("R" + str(key_r) + ",")
                 f.write("R" + feature.GetField("downstream").upper() + ',')
                 f.write(str(round(geom.Length(), 1)) + ",")
+                # noinspection SpellCheckingInspection
                 f.write(str(round(float(feature.GetField("btmwidth")), 2)) + ",")
                 # noinspection SpellCheckingInspection
                 f.write(str(round(1 / float(feature.GetField("bankslope")), 2)) + ",")
@@ -319,7 +324,7 @@ class CascadeToxswa(base.Component):
                         else:
                             loading = 0
                         f2.write(
-                            (timeseries_start + datetime.timedelta(hours=t)).strftime("%d-%b-%Y-%Hh%M") + ",")  # Time
+                            (time_series_start + datetime.timedelta(hours=t)).strftime("%d-%b-%Y-%Hh%M") + ",")  # Time
                         f2.write(format(float(discharge[t]), "E") + ",")  # QBou
                         f2.write(str(round(float(depth[t]), 3)) + ",")  # DepWat
                         f2.write(format(float(loading), "E") + "\n")  # LoaDrf
@@ -333,11 +338,11 @@ class CascadeToxswa(base.Component):
         :return: Nothing.
         """
         temperature = self.inputs["Temperature"].read().values
-        timeseries_start = self.inputs["TimeseriesStart"].read().values.date()
+        time_series_start = self.inputs["TimeSeriesStart"].read().values.date()
         with open(output_file, "w") as f:
             f.write("Time,TemAir\n-,C\n")
             for i in range(len(temperature)):
-                f.write((timeseries_start + datetime.timedelta(i)).strftime("%d-%b-%Y") + ",")
+                f.write((time_series_start + datetime.timedelta(i)).strftime("%d-%b-%Y") + ",")
                 f.write(str(round(temperature[i], 2)) + "\n")
         return
 
@@ -368,13 +373,13 @@ class CascadeToxswa(base.Component):
             f.write(str(self.inputs["HalfLifeTransformationInSediment"].read().values) + ",")
             f.write(str(self.inputs["TemperatureAtWhichHalfLifeInSedimentWasMeasured"].read().values) + ",")
             f.write(str(self.inputs["MolarActivationEnthalpyOfTransformationInSediment"].read().values) + ",")
-            f.write(str(self.inputs["CoefficientForEquilibriumSorptionInSediment"].read().values) + ",")
+            f.write(str(self.inputs["CoefficientForEquilibriumAdsorptionInSediment"].read().values) + ",")
             f.write(str(self.inputs["ReferenceConcentrationInLiquidPhaseInSediment"].read().values) + ",")
             f.write(str(self.inputs["FreundlichExponentInSediment"].read().values) + ",")
-            f.write(str(self.inputs["CoefficientForEquilibriumSorptionOfSuspendedSoils"].read().values) + ",")
+            f.write(str(self.inputs["CoefficientForEquilibriumAdsorptionOfSuspendedSoils"].read().values) + ",")
             f.write(str(self.inputs["ReferenceConcentrationForSuspendedSoils"].read().values) + ",")
             f.write(str(self.inputs["FreundlichExponentForSuspendedSoils"].read().values) + ",")
-            f.write(str(self.inputs["CoefficientForLinearSorptionOnMacrophytes"].read().values) + ",0,-,0,0,-\n")
+            f.write(str(self.inputs["CoefficientForLinearAdsorptionOnMacrophytes"].read().values) + ",0,-,0,0,-\n")
         return
 
     def prepare_parameterization(self, parameter_file, processing_path, reach_file, temperature_file, substance_file):
@@ -394,9 +399,9 @@ class CascadeToxswa(base.Component):
             f.write("experimentName = e1\n")
             f.write("reachSelection = all\n")
             f.write("reachFile = " + reach_file + "\n")
-            f.write("startDateSim = " + self.inputs["TimeseriesStart"].read().values.strftime("%d-%b-%Y") + "\n")
+            f.write("startDateSim = " + self.inputs["TimeSeriesStart"].read().values.strftime("%d-%b-%Y") + "\n")
             f.write("endDateSim = " +
-                    (self.inputs["TimeseriesStart"].read().values + datetime.timedelta(
+                    (self.inputs["TimeSeriesStart"].read().values + datetime.timedelta(
                         self.inputs["MassLoadingSprayDrift"].describe()["shape"][0] - 1)).strftime("%d-%b-%Y") +
                     "\n")
             f.write("\n[toxswa]\n")
@@ -447,7 +452,7 @@ class CascadeToxswa(base.Component):
         self.outputs["ConLiqWatTgtAvg"].set_values(
             np.ndarray,
             shape=(number_time_steps, reaches.shape[0]),
-            dtype=np.float,
+            data_type=np.float,
             chunks=(min(65536, number_time_steps), 1),
             scales="time/hour, space/base_geometry",
             unit="g/m³"
@@ -455,7 +460,7 @@ class CascadeToxswa(base.Component):
         self.outputs["CntSedTgt1"].set_values(
             np.ndarray,
             shape=(number_time_steps, reaches.shape[0]),
-            dtype=np.float,
+            data_type=np.float,
             chunks=(min(65536, number_time_steps), 1),
             scales="time/hour, space/base_geometry"
         )
