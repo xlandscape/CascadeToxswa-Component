@@ -1,5 +1,15 @@
 # Changelog
-This is the changelog for the CascadeToxswa component. It was automatically created on 2021-08-10.
+This is the changelog for the CascadeToxswa component. It was automatically created on 2021-08-13.
+
+## [2.0.5] - 2021-08-13
+
+### Added
+- Base documentation
+
+### Changed
+
+### Fixed
+
 
 ## [2.0.4] - 2021-07-16
 
