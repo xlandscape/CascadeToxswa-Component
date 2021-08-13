@@ -39,6 +39,28 @@ class CascadeToxswa(base.Component):
         base.VersionInfo("1.2.20", None)
     )
 
+    # AUTHORS
+    VERSION.authors.extend((
+        "Sascha Bub (component) - sascha.bub@gmx.de",
+        "Thorsten Schad (component) - thorsten.schad@bayer.com",
+        "Wim Beltman (module) - wim.beltman@wur.nl",
+        "Maarten Braakhekke (module) - maarten.braakhekke@wur.nl",
+        "Louise Wipfler (module) - louise.wipfler@wur.nl"
+    ))
+
+    # ACKNOWLEDGEMENTS
+    VERSION.acknowledgements.extend((
+        "[TOXSWA](https://www.pesticidemodels.eu/toxswa)",
+    ))
+
+    # ROADMAP
+    VERSION.roadmap.extend((
+        """Replace shapefile input
+        ([#1](https://gitlab.bayer.com/aqrisk-landscape/cascadetoxswa-component/-/issues/1))""",
+        """Rename Reaches input or output 
+        ([#3](https://gitlab.bayer.com/aqrisk-landscape/cascadetoxswa-component/-/issues/3))""",
+    ))
+
     # CHANGELOG
     VERSION.added("1.2.20", "components.CascadeToxswa component")
     VERSION.changed("1.2.25", "Convert discharge to m3/s in components.CascadeToxswa")
@@ -70,32 +92,43 @@ class CascadeToxswa(base.Component):
 
     def __init__(self, name, observer, store):
         super(CascadeToxswa, self).__init__(name, observer, store)
-        self._module = base.Module("CMF-TOXWA_coupling", "0.5")
+        self._module = base.Module("CMF-TOXWA_coupling", "0.5", "https://doi.org/10.18174/547183")
         self._inputs = base.InputContainer(self, [
             base.Input(
                 "ProcessingPath",
                 (attrib.Class(str, 1), attrib.Unit(None, 1), attrib.Scales("global", 1)),
-                self.default_observer
+                self.default_observer,
+                description="""The working directory for the module. It is used for all files prepared as module inputs
+                or generated as module outputs."""
             ),
             base.Input(
                 "Hydrography",
                 (attrib.Class(str, 1), attrib.Unit(None, 1), attrib.Scales("global", 1)),
-                self.default_observer
+                self.default_observer,
+                description="""The spatial delineation of the hydrographic features in the simulated landscape. This
+                input basically represents the flow-lines used during preparation of the hydrology. The hydrography is
+                consistently for all components of the Landscape Model subdivided into individual segments (*reaches*).
+                """
             ),
             base.Input(
                 "SuspendedSolids",
                 (attrib.Class(float, 1), attrib.Unit("g/m³", 1), attrib.Scales("global", 1)),
-                self.default_observer
+                self.default_observer,
+                description="The density of suspended solids that applies to all reaches."
             ),
             base.Input(
                 "Reaches",
                 (attrib.Class(np.ndarray, 1), attrib.Unit(None, 1), attrib.Scales("space/reach", 1)),
-                self.default_observer
+                self.default_observer,
+                description="""The numeric identifiers for individual reaches (in the order of the `Hydrography` input)
+                that apply scenario-wide."""
             ),
             base.Input(
                 "TimeSeriesStart",
                 (attrib.Class(datetime.date, 1), attrib.Unit(None, 1), attrib.Scales("global", 1)),
-                self.default_observer
+                self.default_observer,
+                description="""The first time step for which input data is provided. This is also the time step of where
+                the CascadeToxswa simulation starts."""
             ),
             base.Input(
                 "WaterDischarge",
@@ -104,17 +137,23 @@ class CascadeToxswa(base.Component):
                     attrib.Unit("m³/s", 1),
                     attrib.Scales("time/hour, space/reach", 1)
                 ),
-                self.default_observer
+                self.default_observer,
+                description="The amount of water that leaves a reach within a time step."
             ),
             base.Input(
                 "WaterDepth",
                 (attrib.Class(np.ndarray, 1), attrib.Unit("m", 1), attrib.Scales("time/hour, space/reach", 1)),
-                self.default_observer
+                self.default_observer,
+                description="""The depth of the water body measured from the surface to the lowest point of the 
+                cross-section profile."""
             ),
             base.Input(
                 "Temperature",
                 (attrib.Class(np.ndarray, 1), attrib.Unit("°C", 1), attrib.Scales("time/day", 1)),
-                self.default_observer
+                self.default_observer,
+                description="""The average daily air temperature. If hourly data are available, then the daily average
+                temperature should be calculated from these hourly values. However, if only maximum and minimum daily
+                temperature are available, these two values can be averaged."""
             ),
             base.Input(
                 "MassLoadingSprayDrift",
@@ -123,128 +162,196 @@ class CascadeToxswa(base.Component):
                     attrib.Unit("mg/m²", 1),
                     attrib.Scales("time/day, space/reach", 1)
                 ),
-                self.default_observer
+                self.default_observer,
+                description="The average drift deposition onto the surface of a water body."
             ),
             base.Input(
                 "MolarMass",
                 (attrib.Class(float, 1), attrib.Unit("g/mol", 1), attrib.Scales("global", 1)),
-                self.default_observer
+                self.default_observer,
+                description="The molar mass of the substance depositing at the water body surface."
             ),
             base.Input(
                 "SaturatedVapourPressure",
                 (attrib.Class(float, 1), attrib.Unit("Pa", 1), attrib.Scales("global", 1)),
-                self.default_observer
+                self.default_observer,
+                description="The saturated vapor pressure of the substance depositing at the water body surface."
             ),
             base.Input(
                 "ReferenceTemperatureForSaturatedVapourPressure",
                 (attrib.Class(float, 1), attrib.Unit("°C", 1), attrib.Scales("global", 1)),
-                self.default_observer
+                self.default_observer,
+                description="The temperature to which the value of the `SaturatedVaporPressure` applies."
             ),
             base.Input(
                 "MolarEnthalpyOfVaporization",
                 (attrib.Class(float, 1), attrib.Unit("kJ/mol", 1), attrib.Scales("global", 1)),
-                self.default_observer
+                self.default_observer,
+                description="The molar vaporization enthalpy of the substance depositing at the water body surface."
             ),
             base.Input(
                 "SolubilityInWater",
                 (attrib.Class(float, 1), attrib.Unit("mg/l", 1), attrib.Scales("global", 1)),
-                self.default_observer
+                self.default_observer,
+                description="The water solubility of the substance depositing at the water body surface."
             ),
             base.Input(
                 "ReferenceTemperatureForWaterSolubility",
                 (attrib.Class(float, 1), attrib.Unit("°C", 1), attrib.Scales("global", 1)),
-                self.default_observer
+                self.default_observer,
+                description="The temperature to which the value of the `SolubilityInWater` applies."
             ),
             base.Input(
                 "MolarEnthalpyOfDissolution",
                 (attrib.Class(float, 1), attrib.Unit("kJ/mol", 1), attrib.Scales("global", 1)),
-                self.default_observer
+                self.default_observer,
+                description="The molar dissolution enthalpy of the substance depositing at the water body surface."
             ),
             base.Input(
                 "DiffusionCoefficient",
                 (attrib.Class(float, 1), attrib.Unit("m²/d", 1), attrib.Scales("global", 1)),
-                self.default_observer
+                self.default_observer,
+                description="The diffusion coefficient of the substance depositing at the water body surface."
             ),
             base.Input(
                 "ReferenceTemperatureForDiffusion",
                 (attrib.Class(float, 1), attrib.Unit("°C", 1), attrib.Scales("global", 1)),
-                self.default_observer
+                self.default_observer,
+                description="The temperature to which the value of the `DiffusionCoefficient` applies."
             ),
             base.Input(
                 "HalfLifeTransformationInWater",
                 (attrib.Class(float, 1), attrib.Unit("d", 1), attrib.Scales("global", 1)),
-                self.default_observer
+                self.default_observer,
+                description="""The half-life transformation time in water of the substance depositing at the water body 
+                surface."""
             ),
             base.Input(
                 "TemperatureAtWhichHalfLifeInWaterWasMeasured",
                 (attrib.Class(float, 1), attrib.Unit("°C", 1), attrib.Scales("global", 1)),
-                self.default_observer
+                self.default_observer,
+                description="The temperature to which the value of the `HalfLifeTransformationInWater` applies."
             ),
             base.Input(
                 "MolarActivationEnthalpyOfTransformationInWater",
                 (attrib.Class(float, 1), attrib.Unit("kJ/mol", 1), attrib.Scales("global", 1)),
-                self.default_observer
+                self.default_observer,
+                description="The molar activation enthalpy relating to the transformation in water."
             ),
             base.Input(
                 "HalfLifeTransformationInSediment",
                 (attrib.Class(float, 1),  attrib.Unit("d", 1), attrib.Scales("global", 1)),
-                self.default_observer
+                self.default_observer,
+                description="""The half-life transformation time in sediment of the substance depositing at the water 
+                body surface."""
             ),
             base.Input(
                 "TemperatureAtWhichHalfLifeInSedimentWasMeasured",
                 (attrib.Class(float, 1), attrib.Unit("°C", 1), attrib.Scales("global", 1)),
-                self.default_observer
+                self.default_observer,
+                description="The temperature to which the value of the `HalfLifeTransformationInSediment` applies."
             ),
             base.Input(
                 "MolarActivationEnthalpyOfTransformationInSediment",
                 (attrib.Class(float, 1), attrib.Unit("kJ/mol", 1), attrib.Scales("global", 1)),
-                self.default_observer
+                self.default_observer,
+                description="The molar activation enthalpy relating to the transformation in sediment."
             ),
             base.Input(
                 "CoefficientForEquilibriumAdsorptionInSediment",
                 (attrib.Class(float, 1), attrib.Unit("l/kg", 1), attrib.Scales("global", 1)),
-                self.default_observer
+                self.default_observer,
+                description="""The coefficient for equilibrium adsorption in sediment of the substance depositing at 
+                the water body surface."""
             ),
             base.Input(
                 "ReferenceConcentrationInLiquidPhaseInSediment",
                 (attrib.Class(float, 1), attrib.Unit("mg/l", 1), attrib.Scales("global", 1)),
-                self.default_observer
+                self.default_observer,
+                description="""The reference concentration in liquid phase in sediment of the substance depositing at 
+                the water body surface."""
             ),
             base.Input(
                 "FreundlichExponentInSediment",
                 (attrib.Class(float, 1), attrib.Unit("1", 1), attrib.Scales("global", 1)),
-                self.default_observer
+                self.default_observer,
+                description="""The Freundlich exponent in sediment of the substance depositing at the water body 
+                surface."""
             ),
             base.Input(
                 "CoefficientForEquilibriumAdsorptionOfSuspendedSoils",
                 (attrib.Class(float, 1), attrib.Unit("l/kg", 1), attrib.Scales("global", 1)),
-                self.default_observer
+                self.default_observer,
+                description="The coefficient for equilibrium adsorption of suspended soils."
             ),
             base.Input(
                 "ReferenceConcentrationForSuspendedSoils",
                 (attrib.Class(float, 1), attrib.Unit("mg/l", 1), attrib.Scales("global", 1)),
-                self.default_observer
+                self.default_observer,
+                description="The reference concentration for suspended soils."
             ),
             base.Input(
                 "FreundlichExponentForSuspendedSoils",
                 (attrib.Class(float, 1), attrib.Unit("1", 1), attrib.Scales("global", 1)),
-                self.default_observer
+                self.default_observer,
+                description="The Freundlich exponent for suspended particles."
             ),
             base.Input(
                 "CoefficientForLinearAdsorptionOnMacrophytes",
                 (attrib.Class(float, 1), attrib.Unit("l/kg", 1), attrib.Scales("global", 1)),
-                self.default_observer
+                self.default_observer,
+                description="""The coefficient for the linear adsorption of the substance on macrophytes."""
             ),
             base.Input(
                 "NumberWorkers",
                 (attrib.Class(int, 1), attrib.Unit(None, 1), attrib.Scales("global", 1)),
-                self.default_observer
+                self.default_observer,
+                description="""The number of individual worker processes for the CascadeToxswa simulation. Higher values
+                usually result in a faster processing, but performance will drop if the available processors are 
+                overloaded with workers. Consider for an optimal value also other processes running on the same 
+                machine, especially other Monte Carlo runs of the Landscape Model."""
             )
         ])
         self._outputs = base.OutputContainer(self, [
-            base.Output("Reaches", store, self),
-            base.Output("ConLiqWatTgtAvg", store, self),
-            base.Output("CntSedTgt1", store, self)
+            base.Output(
+                "Reaches",
+                store,
+                self,
+                {"scales": "space/reach", "unit": None},
+                """The numerical identifiers of the reaches in the order presented by the other outputs. See the 
+                `Reaches` input for further details on identifiers.""",
+                {"type": "list[int]"}
+            ),
+            base.Output(
+                "ConLiqWatTgtAvg",
+                store,
+                self,
+                {"data_type": np.float, "scales": "time/hour, space/base_geometry", "unit": "g/m³"},
+                "The average concentration along the reach at the specified moment in time in the water phase.",
+                {
+                    "type": np.ndarray,
+                    "shape": (
+                        "the number of time steps as given by the [WaterDischarge](#WaterDischarge) input",
+                        "the number of reaches as given by the `Reaches` input"
+                    ),
+                    "chunks": "for fast retrieval of time series"
+                }
+            ),
+            base.Output(
+                "CntSedTgt1",
+                store,
+                self,
+                {"data_type": np.float, "scales": "time/hour, space/base_geometry", "unit": "g/kg"},
+                "The total content in target layer 1 of sediment atb the specified time.",
+                {
+                    "type": np.ndarray,
+                    "shape": (
+                        "the number of time steps as given by the [WaterDischarge](#WaterDischarge) input",
+                        "the number of reaches as given by the `Reaches` input"
+                    ),
+                    "chunks": "for fast retrieval of time series"
+                }
+            )
         ])
         return
 
@@ -447,23 +554,12 @@ class CascadeToxswa(base.Component):
         :return: Nothing.
         """
         reaches = self.inputs["Reaches"].read().values
-        self.outputs["Reaches"].set_values(reaches.tolist(), scales="space/reach")
+        self.outputs["Reaches"].set_values(reaches.tolist())
         number_time_steps = self.inputs["WaterDischarge"].describe()["shape"][0]
         self.outputs["ConLiqWatTgtAvg"].set_values(
-            np.ndarray,
-            shape=(number_time_steps, reaches.shape[0]),
-            data_type=np.float,
-            chunks=(min(65536, number_time_steps), 1),
-            scales="time/hour, space/base_geometry",
-            unit="g/m³"
-        )
+            np.ndarray, shape=(number_time_steps, reaches.shape[0]), chunks=(min(65536, number_time_steps), 1))
         self.outputs["CntSedTgt1"].set_values(
-            np.ndarray,
-            shape=(number_time_steps, reaches.shape[0]),
-            data_type=np.float,
-            chunks=(min(65536, number_time_steps), 1),
-            scales="time/hour, space/base_geometry"
-        )
+            np.ndarray, shape=(number_time_steps, reaches.shape[0]),  chunks=(min(65536, number_time_steps), 1))
         for i, reach in enumerate(reaches):
             water_concentration = np.zeros(number_time_steps)
             sediment_concentration = np.zeros(number_time_steps)
