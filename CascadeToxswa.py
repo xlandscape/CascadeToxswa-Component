@@ -340,6 +340,21 @@ class CascadeToxswa(base.Component):
                 }
             ),
             base.Output(
+                "ConLiqWatTgtAvgHrAvg",
+                store,
+                self,
+                {"data_type": np.float, "scales": "time/hour, space/base_geometry", "unit": "g/m³"},
+                "The time weighted average of concentration in the water phase averaged for a reach.",
+                {
+                    "type": np.ndarray,
+                    "shape": (
+                        "the number of time steps as given by the [WaterDischarge](#WaterDischarge) input",
+                        "the number of reaches as given by the `Reaches` input"
+                    ),
+                    "chunks": "for fast retrieval of time series"
+                }
+            ),
+            base.Output(
                 "CntSedTgt1",
                 store,
                 self,
@@ -521,7 +536,7 @@ class CascadeToxswa(base.Component):
             f.write("substanceFile = " + substance_file + "\n")
             f.write("substanceNames = CMP_A\n")
             f.write("timeStepMin = 10\n")
-            f.write("outputVars = ConLiqWatTgtAvg,CntSedTgt1\n")
+            f.write("outputVars = ConLiqWatTgtAvg,ConLiqWatTgtAvgHrAvg,CntSedTgt1\n")
             f.write("keepOrigOutFiles = False\n")
             # noinspection SpellCheckingInspection
             f.write("massFlowTimestepParam = 1\n")
@@ -560,19 +575,25 @@ class CascadeToxswa(base.Component):
         number_time_steps = self.inputs["WaterDischarge"].describe()["shape"][0]
         self.outputs["ConLiqWatTgtAvg"].set_values(
             np.ndarray, shape=(number_time_steps, reaches.shape[0]), chunks=(min(65536, number_time_steps), 1))
+        self.outputs["ConLiqWatTgtAvgHrAvg"].set_values(
+            np.ndarray, shape=(number_time_steps, reaches.shape[0]), chunks=(min(65536, number_time_steps), 1))
         self.outputs["CntSedTgt1"].set_values(
             np.ndarray, shape=(number_time_steps, reaches.shape[0]),  chunks=(min(65536, number_time_steps), 1))
         for i, reach in enumerate(reaches):
             water_concentration = np.zeros(number_time_steps)
+            water_concentration_hr = np.zeros(number_time_steps)
             sediment_concentration = np.zeros(number_time_steps)
             with open(os.path.join(output_path, "R" + str(reach) + ".csv")) as f:
                 f.readline()
                 for t in range(number_time_steps):
                     fields = f.readline().split(",")
                     water_concentration[t] = float(fields[2])
-                    sediment_concentration[t] = float(fields[3])
+                    water_concentration_hr[t] = float(fields[3])
+                    sediment_concentration[t] = float(fields[4])
             self.outputs["ConLiqWatTgtAvg"].set_values(
                 water_concentration, slices=(slice(number_time_steps), i), create=False)
+            self.outputs["ConLiqWatTgtAvgHrAvg"].set_values(
+                water_concentration_hr, slices=(slice(number_time_steps), i), create=False)
             self.outputs["CntSedTgt1"].set_values(
                 sediment_concentration, slices=(slice(number_time_steps), i), create=False)
         return
