@@ -17,15 +17,15 @@
 ## About the project
 A component that encapsulates the CascadeToxswa module for usage within the Landscape Model.  
 This is an automatically generated documentation based on the available code and in-line documentation. The current
-version of this document is from 2021-08-13.  
+version of this document is from 2021-08-16.  
 
 ### Built with
-* Landscape Model core version 1.5.5
+* Landscape Model core version 1.5.6
 * CMF-TOXWA_coupling version 0.5 (see `https://doi.org/10.18174/547183` for details)
 
 
 ## Getting Started
-The component can be used in any Landscape Model based on core version 1.5.5 or newer. See the Landscape Model
+The component can be used in any Landscape Model based on core version 1.5.6 or newer. See the Landscape Model
 core's `README` for general tips on how to add a component to a Landscape Model.
 
 ### Prerequisites
@@ -340,6 +340,16 @@ The values apply to the following scale: `space/reach`.
 Values have no physical unit.
 #### ConLiqWatTgtAvg
 The average concentration along the reach at the specified moment in time in the water phase.  
+Values are expectedly of type `ndarray`.
+Value representation is in a 2-dimensional array.
+Dimension 1 spans the number of time steps as given by the [WaterDischarge](#WaterDischarge) input.
+Dimension 2 spans the number of reaches as given by the `Reaches` input.
+Chunking of the array is for fast retrieval of time series.
+Individual array elements have a type of `float`.
+The values apply to the following scale: `time/hour, space/base_geometry`.
+The physical unit of the values is `g/m³`.
+#### ConLiqWatTgtAvgHrAvg
+The time weighted average of concentration in the water phase averaged for a reach.  
 Values are expectedly of type `ndarray`.
 Value representation is in a 2-dimensional array.
 Dimension 1 spans the number of time steps as given by the [WaterDischarge](#WaterDischarge) input.

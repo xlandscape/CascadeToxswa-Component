@@ -1,5 +1,15 @@
 # Changelog
-This is the changelog for the CascadeToxswa component. It was automatically created on 2021-08-13.
+This is the changelog for the CascadeToxswa component. It was automatically created on 2021-08-16.
+
+## [2.0.6] - 2021-08-16
+
+### Added
+- `ConLiqWatTgtAvgHrAvg` output
+
+### Changed
+
+### Fixed
+
 
 ## [2.0.5] - 2021-08-13
 

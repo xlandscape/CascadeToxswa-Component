@@ -15,6 +15,7 @@ class CascadeToxswa(base.Component):
     """
     # RELEASES
     VERSION = base.VersionCollection(
+        base.VersionInfo("2.0.6", "2021-08-16"),
         base.VersionInfo("2.0.5", "2021-08-13"),
         base.VersionInfo("2.0.4", "2021-07-16"),
         base.VersionInfo("2.0.3", "2021-02-19"),
@@ -91,6 +92,7 @@ class CascadeToxswa(base.Component):
     VERSION.fixed("2.0.4", "Retrieval of output data type")
     VERSION.changed("2.0.4", "Spelling of input names")
     VERSION.added("2.0.5", "Base documentation")
+    VERSION.added("2.0.6", "`ConLiqWatTgtAvgHrAvg` output")
 
     def __init__(self, name, observer, store):
         super(CascadeToxswa, self).__init__(name, observer, store)
