@@ -15,6 +15,7 @@ class CascadeToxswa(base.Component):
     """
     # RELEASES
     VERSION = base.VersionCollection(
+        base.VersionInfo("2.1.0", "2021-09-13"),
         base.VersionInfo("2.0.6", "2021-08-16"),
         base.VersionInfo("2.0.5", "2021-08-13"),
         base.VersionInfo("2.0.4", "2021-07-16"),
@@ -57,8 +58,6 @@ class CascadeToxswa(base.Component):
 
     # ROADMAP
     VERSION.roadmap.extend((
-        """Replace shapefile input
-        ([#1](https://gitlab.bayer.com/aqrisk-landscape/cascadetoxswa-component/-/issues/1))""",
         """Rename Reaches input or output 
         ([#3](https://gitlab.bayer.com/aqrisk-landscape/cascadetoxswa-component/-/issues/3))""",
     ))
@@ -93,6 +92,7 @@ class CascadeToxswa(base.Component):
     VERSION.changed("2.0.4", "Spelling of input names")
     VERSION.added("2.0.5", "Base documentation")
     VERSION.added("2.0.6", "`ConLiqWatTgtAvgHrAvg` output")
+    VERSION.added("2.1.0", "Replaced shapefile input")
 
     def __init__(self, name, observer, store):
         super(CascadeToxswa, self).__init__(name, observer, store)
@@ -104,15 +104,6 @@ class CascadeToxswa(base.Component):
                 self.default_observer,
                 description="""The working directory for the module. It is used for all files prepared as module inputs
                 or generated as module outputs."""
-            ),
-            base.Input(
-                "Hydrography",
-                (attrib.Class(str, 1), attrib.Unit(None, 1), attrib.Scales("global", 1)),
-                self.default_observer,
-                description="""The spatial delineation of the hydrographic features in the simulated landscape. This
-                input basically represents the flow-lines used during preparation of the hydrology. The hydrography is
-                consistently for all components of the Landscape Model subdivided into individual segments (*reaches*).
-                """
             ),
             base.Input(
                 "SuspendedSolids",
@@ -314,6 +305,46 @@ class CascadeToxswa(base.Component):
                 usually result in a faster processing, but performance will drop if the available processors are 
                 overloaded with workers. Consider for an optimal value also other processes running on the same 
                 machine, especially other Monte Carlo runs of the Landscape Model."""
+            ),
+            base.Input(
+                "HydrographyReaches",
+                (attrib.Class("list[int]"), attrib.Unit(None), attrib.Scales("space/base_geometry")),
+                self.default_observer
+            ),
+            base.Input(
+                "HydrographyGeometries",
+                (attrib.Class("list[bytes]"), attrib.Unit(None), attrib.Scales("space/base_geometry")),
+                self.default_observer
+            ),
+            base.Input(
+                "DownstreamReach",
+                (attrib.Class("list[str]"), attrib.Unit(None), attrib.Scales("space/base_geometry")),
+                self.default_observer
+            ),
+            base.Input(
+                "BottomWidth",
+                (attrib.Class("list[float]"), attrib.Unit("m"), attrib.Scales("space/base_geometry")),
+                self.default_observer
+            ),
+            base.Input(
+                "BankSlope",
+                (attrib.Class("list[float]"), attrib.Unit("1"), attrib.Scales("space/base_geometry")),
+                self.default_observer
+            ),
+            base.Input(
+                "OrganicContent",
+                (attrib.Class("list[float]"), attrib.Unit("g/g"), attrib.Scales("space/base_geometry")),
+                self.default_observer
+            ),
+            base.Input(
+                "BulkDensity",
+                (attrib.Class("list[float]"), attrib.Unit("kg/m³"), attrib.Scales("space/base_geometry")),
+                self.default_observer
+            ),
+            base.Input(
+                "Porosity",
+                (attrib.Class("list[float]"), attrib.Unit("m³/m³"), attrib.Scales("space/base_geometry")),
+                self.default_observer
             )
         ])
         self._outputs = base.OutputContainer(self, [
@@ -403,36 +434,39 @@ class CascadeToxswa(base.Component):
         :param reaches_file: The path for the reaches input file.
         :return: Nothing.
         """
-        hydrography = self.inputs["Hydrography"].read().values
+        hydrography_reaches = self.inputs["HydrographyReaches"].read().values
+        hydrography_geometries = self.inputs["HydrographyGeometries"].read().values
         suspended_solids = self.inputs["SuspendedSolids"].read().values
         reaches = self.inputs["Reaches"].read().values
         time_series_start = self.inputs["TimeSeriesStart"].read().values
         number_time_steps = self.inputs["WaterDischarge"].describe()["shape"][0]
-        driver = ogr.GetDriverByName("ESRI Shapefile")
-        data_source = driver.Open(hydrography, 0)
-        layer = data_source.GetLayer()
+        downstream_reaches = self.inputs["DownstreamReach"].read().values
+        bottom_widths = self.inputs["BottomWidth"].read().values
+        bank_slopes = self.inputs["BankSlope"].read().values
+        organic_contents = self.inputs["OrganicContent"].read().values
+        bulk_densities = self.inputs["BulkDensity"].read().values
+        porosity = self.inputs["Porosity"].read().values
         with open(reaches_file, "w") as f:
             # noinspection SpellCheckingInspection
             f.write(
                 "RchID,RchIDDwn,Len,WidWatSys,SloSidWatSys,ConSus,CntOmSusSol,Rho,ThetaSat,CntOM,X,Y,Expsd\n" +
                 "-,-,m,m,-,g/m3,g/g,kg/m3,m3/m3,g/g,-,-,-\n")
-            for feature in layer:
-                key_r = feature.GetField("key")
-                geom = feature.GetGeometryRef()
+        #     for feature in layer:
+            for i in range(len(hydrography_reaches)):
+                key_r = hydrography_reaches[i]
+                geom = ogr.CreateGeometryFromWkb(hydrography_geometries[i])
                 coord = geom.GetPoint(0)
                 exposed = False
                 f.write("R" + str(key_r) + ",")
-                f.write("R" + feature.GetField("downstream").upper() + ',')
+                f.write("R" + downstream_reaches[i].upper() + ',')
                 f.write(str(round(geom.Length(), 1)) + ",")
-                # noinspection SpellCheckingInspection
-                f.write(str(round(float(feature.GetField("btmwidth")), 2)) + ",")
-                # noinspection SpellCheckingInspection
-                f.write(str(round(1 / float(feature.GetField("bankslope")), 2)) + ",")
-                f.write(str(round(float(suspended_solids), 1)) + ",")
-                f.write(str(round(float(feature.GetField("oc")) * 1.742, 2)) + ",")
-                f.write(str(round(float(feature.GetField("dens")) * 1e3)) + ",")
-                f.write(str(round(float(feature.GetField("porosity")), 2)) + ",")
-                f.write(str(round(float(feature.GetField("oc")) * 1.742, 2)) + ",")
+                f.write(str(round(bottom_widths[i], 2)) + ",")
+                f.write(str(round(1 / bank_slopes[i], 2)) + ",")
+                f.write(str(round(suspended_solids, 1)) + ",")
+                f.write(str(round(organic_contents[i] * 1.742, 2)) + ",")
+                f.write(str(round(bulk_densities[i])) + ",")
+                f.write(str(round(porosity[i], 2)) + ",")
+                f.write(str(round(organic_contents[i] * 1.742, 2)) + ",")
                 f.write(str(coord[0]) + ",")
                 f.write(str(coord[1]) + ",")
                 i = int(np.where(reaches == key_r)[0])
