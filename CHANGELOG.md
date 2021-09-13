@@ -1,5 +1,15 @@
 # Changelog
-This is the changelog for the CascadeToxswa component. It was automatically created on 2021-08-16.
+This is the changelog for the CascadeToxswa component. It was automatically created on 2021-09-13.
+
+## [2.1] - 2021-09-13
+
+### Added
+- Replaced shapefile input
+
+### Changed
+
+### Fixed
+
 
 ## [2.0.6] - 2021-08-16
 
