@@ -112,7 +112,7 @@ class CascadeToxswa(base.Component):
                 description="The density of suspended solids that applies to all reaches."
             ),
             base.Input(
-                "Reaches",
+                "HydrographyReachIds",
                 (attrib.Class(np.ndarray, 1), attrib.Unit(None, 1), attrib.Scales("space/reach", 1)),
                 self.default_observer,
                 description="""The numeric identifiers for individual reaches (in the order of the `Hydrography` input)
@@ -437,7 +437,7 @@ class CascadeToxswa(base.Component):
         hydrography_reaches = self.inputs["HydrographyReaches"].read().values
         hydrography_geometries = self.inputs["HydrographyGeometries"].read().values
         suspended_solids = self.inputs["SuspendedSolids"].read().values
-        reaches = self.inputs["Reaches"].read().values
+        reaches = self.inputs["HydrographyReachIds"].read().values
         time_series_start = self.inputs["TimeSeriesStart"].read().values
         number_time_steps = self.inputs["WaterDischarge"].describe()["shape"][0]
         downstream_reaches = self.inputs["DownstreamReach"].read().values
@@ -606,7 +606,7 @@ class CascadeToxswa(base.Component):
         :param output_path: The output path of the module.
         :return: Nothing.
         """
-        reaches = self.inputs["Reaches"].read().values
+        reaches = self.inputs["HydrographyReachIds"].read().values
         self.outputs["Reaches"].set_values(reaches.tolist())
         number_time_steps = self.inputs["WaterDischarge"].describe()["shape"][0]
         self.outputs["ConLiqWatTgtAvg"].set_values(
