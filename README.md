@@ -17,15 +17,15 @@
 ## About the project
 A component that encapsulates the CascadeToxswa module for usage within the Landscape Model.  
 This is an automatically generated documentation based on the available code and in-line documentation. The current
-version of this document is from 2021-09-13.  
+version of this document is from 2021-09-14.  
 
 ### Built with
-* Landscape Model core version 1.6.3
+* Landscape Model core version 1.6.4
 * CMF-TOXWA_coupling version 0.5 (see `https://doi.org/10.18174/547183` for details)
 
 
 ## Getting Started
-The component can be used in any Landscape Model based on core version 1.6.3 or newer. See the Landscape Model
+The component can be used in any Landscape Model based on core version 1.6.4 or newer. See the Landscape Model
 core's `README` for general tips on how to add a component to a Landscape Model.
 
 ### Prerequisites
@@ -46,30 +46,32 @@ The following gives a sample configuration of the `CascadeToxswa` component. See
 <ProcessingPath>$(_MCS_BASE_DIR_)\$(_MC_NAME_)\processing\fate\cascade</ProcessingPath>
     <SuspendedSolids
 type="float" unit="g/m&#179;">15</SuspendedSolids>
-    <Reaches>
-        <FromOutput component="DepositionToReach"
-output="Reaches" />
-    </Reaches>
+    <HydrographyReachIds>
+        <FromOutput
+component="DepositionToReach" output="Reaches" />
+    </HydrographyReachIds>
     <TimeSeriesStart>
-        <FromOutput component="Hydrology"
-output="TimeSeriesStart" />
+        <FromOutput
+component="Hydrology" output="TimeSeriesStart" />
     </TimeSeriesStart>
     <WaterDischarge>
-        <FromOutput component="Hydrology"
-output="Flow" />
+        <FromOutput
+component="Hydrology" output="Flow" />
     </WaterDischarge>
     <WaterDepth>
-        <FromOutput component="Hydrology" output="Depth" />
-</WaterDepth>
+        <FromOutput component="Hydrology"
+output="Depth" />
+    </WaterDepth>
     <Temperature>
-        <FromOutput component="Weather" output="TEMPERATURE_AVG" />
+        <FromOutput component="Weather" output="TEMPERATURE_AVG"
+/>
     </Temperature>
-<MassLoadingSprayDrift>
-        <FromOutput component="DepositionToReach" output="Deposition" />
-</MassLoadingSprayDrift>
+    <MassLoadingSprayDrift>
+        <FromOutput component="DepositionToReach" output="Deposition"
+/>
+    </MassLoadingSprayDrift>
     <MolarMass type="float" unit="g/mol">$(MolarMass)</MolarMass>
-    <SaturatedVapourPressure
-type="float" unit="Pa">$(SaturatedVapourPressure)</SaturatedVapourPressure>
+<SaturatedVapourPressure type="float" unit="Pa">$(SaturatedVapourPressure)</SaturatedVapourPressure>
 <ReferenceTemperatureForSaturatedVapourPressure type="float" unit="&#176;C">
         $(Temp0)
 </ReferenceTemperatureForSaturatedVapourPressure>
@@ -172,11 +174,11 @@ The density of suspended solids that applies to all reaches.
 The physical unit of the `SuspendedSolids` input values is `g/m³`.
 Values have to refer to the `global` scale.
 
-#### Reaches
+#### HydrographyReachIds
 The numeric identifiers for individual reaches (in the order of the `Hydrography` input)
 that apply scenario-wide.  
-`Reaches` expects its values to be of type `ndarray`.
-Values of the `Reaches` input may not have a physical unit.
+`HydrographyReachIds` expects its values to be of type `ndarray`.
+Values of the `HydrographyReachIds` input may not have a physical unit.
 Values have to refer to the `space/reach` scale.
 
 #### TimeSeriesStart
@@ -439,9 +441,7 @@ The physical unit of the values is `g/kg`.
 
 
 ## Roadmap
-The following changes will be part of future `CascadeToxswa` versions:
-* Rename Reaches input or output 
-([#3](https://gitlab.bayer.com/aqrisk-landscape/cascadetoxswa-component/-/issues/3))
+The `CascadeToxswa` component is stable. No further development takes place at the moment.
 
 
 ## Contributing
