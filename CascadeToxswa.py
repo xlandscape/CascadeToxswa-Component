@@ -15,6 +15,7 @@ class CascadeToxswa(base.Component):
     """
     # RELEASES
     VERSION = base.VersionCollection(
+        base.VersionInfo("2.1.1", "2021-09-14"),
         base.VersionInfo("2.1.0", "2021-09-13"),
         base.VersionInfo("2.0.6", "2021-08-16"),
         base.VersionInfo("2.0.5", "2021-08-13"),
@@ -57,10 +58,7 @@ class CascadeToxswa(base.Component):
     ))
 
     # ROADMAP
-    VERSION.roadmap.extend((
-        """Rename Reaches input or output 
-        ([#3](https://gitlab.bayer.com/aqrisk-landscape/cascadetoxswa-component/-/issues/3))""",
-    ))
+    VERSION.roadmap.extend(())
 
     # CHANGELOG
     VERSION.added("1.2.20", "components.CascadeToxswa component")
@@ -92,7 +90,8 @@ class CascadeToxswa(base.Component):
     VERSION.changed("2.0.4", "Spelling of input names")
     VERSION.added("2.0.5", "Base documentation")
     VERSION.added("2.0.6", "`ConLiqWatTgtAvgHrAvg` output")
-    VERSION.added("2.1.0", "Replaced shapefile input")
+    VERSION.changed("2.1.0", "Replaced shapefile input")
+    VERSION.changed("2.1.1", "`Reaches` input renamed to `HydrographyReachesIds` ")
 
     def __init__(self, name, observer, store):
         super(CascadeToxswa, self).__init__(name, observer, store)
