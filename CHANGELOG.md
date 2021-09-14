@@ -1,12 +1,22 @@
 # Changelog
-This is the changelog for the CascadeToxswa component. It was automatically created on 2021-09-13.
+This is the changelog for the CascadeToxswa component. It was automatically created on 2021-09-14.
+
+## [2.1.1] - 2021-09-14
+
+### Added
+
+### Changed
+- `Reaches` input renamed to `HydrographyReachesIds` 
+
+### Fixed
+
 
 ## [2.1] - 2021-09-13
 
 ### Added
-- Replaced shapefile input
 
 ### Changed
+- Replaced shapefile input
 
 ### Fixed
 
