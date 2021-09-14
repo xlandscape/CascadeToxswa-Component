@@ -15,6 +15,7 @@ class CascadeToxswa(base.Component):
     """
     # RELEASES
     VERSION = base.VersionCollection(
+        base.VersionInfo("2.1.1", "2021-09-14"),
         base.VersionInfo("2.1.0", "2021-09-13"),
         base.VersionInfo("2.0.6", "2021-08-16"),
         base.VersionInfo("2.0.5", "2021-08-13"),
@@ -57,10 +58,7 @@ class CascadeToxswa(base.Component):
     ))
 
     # ROADMAP
-    VERSION.roadmap.extend((
-        """Rename Reaches input or output 
-        ([#3](https://gitlab.bayer.com/aqrisk-landscape/cascadetoxswa-component/-/issues/3))""",
-    ))
+    VERSION.roadmap.extend(())
 
     # CHANGELOG
     VERSION.added("1.2.20", "components.CascadeToxswa component")
@@ -92,7 +90,8 @@ class CascadeToxswa(base.Component):
     VERSION.changed("2.0.4", "Spelling of input names")
     VERSION.added("2.0.5", "Base documentation")
     VERSION.added("2.0.6", "`ConLiqWatTgtAvgHrAvg` output")
-    VERSION.added("2.1.0", "Replaced shapefile input")
+    VERSION.changed("2.1.0", "Replaced shapefile input")
+    VERSION.changed("2.1.1", "`Reaches` input renamed to `HydrographyReachesIds` ")
 
     def __init__(self, name, observer, store):
         super(CascadeToxswa, self).__init__(name, observer, store)
@@ -112,7 +111,7 @@ class CascadeToxswa(base.Component):
                 description="The density of suspended solids that applies to all reaches."
             ),
             base.Input(
-                "Reaches",
+                "HydrographyReachIds",
                 (attrib.Class(np.ndarray, 1), attrib.Unit(None, 1), attrib.Scales("space/reach", 1)),
                 self.default_observer,
                 description="""The numeric identifiers for individual reaches (in the order of the `Hydrography` input)
@@ -437,7 +436,7 @@ class CascadeToxswa(base.Component):
         hydrography_reaches = self.inputs["HydrographyReaches"].read().values
         hydrography_geometries = self.inputs["HydrographyGeometries"].read().values
         suspended_solids = self.inputs["SuspendedSolids"].read().values
-        reaches = self.inputs["Reaches"].read().values
+        reaches = self.inputs["HydrographyReachIds"].read().values
         time_series_start = self.inputs["TimeSeriesStart"].read().values
         number_time_steps = self.inputs["WaterDischarge"].describe()["shape"][0]
         downstream_reaches = self.inputs["DownstreamReach"].read().values
@@ -606,7 +605,7 @@ class CascadeToxswa(base.Component):
         :param output_path: The output path of the module.
         :return: Nothing.
         """
-        reaches = self.inputs["Reaches"].read().values
+        reaches = self.inputs["HydrographyReachIds"].read().values
         self.outputs["Reaches"].set_values(reaches.tolist())
         number_time_steps = self.inputs["WaterDischarge"].describe()["shape"][0]
         self.outputs["ConLiqWatTgtAvg"].set_values(
