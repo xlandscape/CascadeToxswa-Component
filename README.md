@@ -17,15 +17,15 @@
 ## About the project
 A component that encapsulates the CascadeToxswa module for usage within the Landscape Model.  
 This is an automatically generated documentation based on the available code and in-line documentation. The current
-version of this document is from 2021-09-14.  
+version of this document is from 2021-09-17.  
 
 ### Built with
-* Landscape Model core version 1.6.4
+* Landscape Model core version 1.7
 * CMF-TOXWA_coupling version 0.5 (see `https://doi.org/10.18174/547183` for details)
 
 
 ## Getting Started
-The component can be used in any Landscape Model based on core version 1.6.4 or newer. See the Landscape Model
+The component can be used in any Landscape Model based on core version 1.7 or newer. See the Landscape Model
 core's `README` for general tips on how to add a component to a Landscape Model.
 
 ### Prerequisites
@@ -362,42 +362,42 @@ Values of the `NumberWorkers` input may not have a physical unit.
 Values have to refer to the `global` scale.
 
 #### HydrographyReaches
-`HydrographyReaches` expects its values to be of type `list[int]`.
+`HydrographyReaches` expects its values to be of type `list`.
 Values of the `HydrographyReaches` input may not have a physical unit.
 Values have to refer to the `space/base_geometry` scale.
 
 #### HydrographyGeometries
-`HydrographyGeometries` expects its values to be of type `list[bytes]`.
+`HydrographyGeometries` expects its values to be of type `list`.
 Values of the `HydrographyGeometries` input may not have a physical unit.
 Values have to refer to the `space/base_geometry` scale.
 
 #### DownstreamReach
-`DownstreamReach` expects its values to be of type `list[str]`.
+`DownstreamReach` expects its values to be of type `list`.
 Values of the `DownstreamReach` input may not have a physical unit.
 Values have to refer to the `space/base_geometry` scale.
 
 #### BottomWidth
-`BottomWidth` expects its values to be of type `list[float]`.
+`BottomWidth` expects its values to be of type `list`.
 The physical unit of the `BottomWidth` input values is `m`.
 Values have to refer to the `space/base_geometry` scale.
 
 #### BankSlope
-`BankSlope` expects its values to be of type `list[float]`.
+`BankSlope` expects its values to be of type `list`.
 The physical unit of the `BankSlope` input values is `1`.
 Values have to refer to the `space/base_geometry` scale.
 
 #### OrganicContent
-`OrganicContent` expects its values to be of type `list[float]`.
+`OrganicContent` expects its values to be of type `list`.
 The physical unit of the `OrganicContent` input values is `g/g`.
 Values have to refer to the `space/base_geometry` scale.
 
 #### BulkDensity
-`BulkDensity` expects its values to be of type `list[float]`.
+`BulkDensity` expects its values to be of type `list`.
 The physical unit of the `BulkDensity` input values is `kg/m³`.
 Values have to refer to the `space/base_geometry` scale.
 
 #### Porosity
-`Porosity` expects its values to be of type `list[float]`.
+`Porosity` expects its values to be of type `list`.
 The physical unit of the `Porosity` input values is `m³/m³`.
 Values have to refer to the `space/base_geometry` scale.
 

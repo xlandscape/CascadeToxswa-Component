@@ -15,6 +15,7 @@ class CascadeToxswa(base.Component):
     """
     # RELEASES
     VERSION = base.VersionCollection(
+        base.VersionInfo("2.1.2", "2021-09-17"),
         base.VersionInfo("2.1.1", "2021-09-14"),
         base.VersionInfo("2.1.0", "2021-09-13"),
         base.VersionInfo("2.0.6", "2021-08-16"),
@@ -92,6 +93,7 @@ class CascadeToxswa(base.Component):
     VERSION.added("2.0.6", "`ConLiqWatTgtAvgHrAvg` output")
     VERSION.changed("2.1.0", "Replaced shapefile input")
     VERSION.changed("2.1.1", "`Reaches` input renamed to `HydrographyReachesIds` ")
+    VERSION.changed("2.1.2", "Make use of generic types for class attributes")
 
     def __init__(self, name, observer, store):
         super(CascadeToxswa, self).__init__(name, observer, store)
