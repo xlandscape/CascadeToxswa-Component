@@ -307,42 +307,42 @@ class CascadeToxswa(base.Component):
             ),
             base.Input(
                 "HydrographyReaches",
-                (attrib.Class("list[int]"), attrib.Unit(None), attrib.Scales("space/base_geometry")),
+                (attrib.Class(list[int]), attrib.Unit(None), attrib.Scales("space/base_geometry")),
                 self.default_observer
             ),
             base.Input(
                 "HydrographyGeometries",
-                (attrib.Class("list[bytes]"), attrib.Unit(None), attrib.Scales("space/base_geometry")),
+                (attrib.Class(list[bytes]), attrib.Unit(None), attrib.Scales("space/base_geometry")),
                 self.default_observer
             ),
             base.Input(
                 "DownstreamReach",
-                (attrib.Class("list[str]"), attrib.Unit(None), attrib.Scales("space/base_geometry")),
+                (attrib.Class(list[str]), attrib.Unit(None), attrib.Scales("space/base_geometry")),
                 self.default_observer
             ),
             base.Input(
                 "BottomWidth",
-                (attrib.Class("list[float]"), attrib.Unit("m"), attrib.Scales("space/base_geometry")),
+                (attrib.Class(list[float]), attrib.Unit("m"), attrib.Scales("space/base_geometry")),
                 self.default_observer
             ),
             base.Input(
                 "BankSlope",
-                (attrib.Class("list[float]"), attrib.Unit("1"), attrib.Scales("space/base_geometry")),
+                (attrib.Class(list[float]), attrib.Unit("1"), attrib.Scales("space/base_geometry")),
                 self.default_observer
             ),
             base.Input(
                 "OrganicContent",
-                (attrib.Class("list[float]"), attrib.Unit("g/g"), attrib.Scales("space/base_geometry")),
+                (attrib.Class(list[float]), attrib.Unit("g/g"), attrib.Scales("space/base_geometry")),
                 self.default_observer
             ),
             base.Input(
                 "BulkDensity",
-                (attrib.Class("list[float]"), attrib.Unit("kg/m³"), attrib.Scales("space/base_geometry")),
+                (attrib.Class(list[float]), attrib.Unit("kg/m³"), attrib.Scales("space/base_geometry")),
                 self.default_observer
             ),
             base.Input(
                 "Porosity",
-                (attrib.Class("list[float]"), attrib.Unit("m³/m³"), attrib.Scales("space/base_geometry")),
+                (attrib.Class(list[float]), attrib.Unit("m³/m³"), attrib.Scales("space/base_geometry")),
                 self.default_observer
             )
         ])
