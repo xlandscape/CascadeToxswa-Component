@@ -15,6 +15,7 @@ class CascadeToxswa(base.Component):
     """
     # RELEASES
     VERSION = base.VersionCollection(
+        base.VersionInfo("2.1.3", "2021-09-21"),
         base.VersionInfo("2.1.2", "2021-09-17"),
         base.VersionInfo("2.1.1", "2021-09-14"),
         base.VersionInfo("2.1.0", "2021-09-13"),
@@ -94,6 +95,7 @@ class CascadeToxswa(base.Component):
     VERSION.changed("2.1.0", "Replaced shapefile input")
     VERSION.changed("2.1.1", "`Reaches` input renamed to `HydrographyReachesIds` ")
     VERSION.changed("2.1.2", "Make use of generic types for class attributes")
+    VERSION.added("2.1.3", "Input descriptions")
 
     def __init__(self, name, observer, store):
         super(CascadeToxswa, self).__init__(name, observer, store)
@@ -310,42 +312,52 @@ class CascadeToxswa(base.Component):
             base.Input(
                 "HydrographyReaches",
                 (attrib.Class(list[int]), attrib.Unit(None), attrib.Scales("space/base_geometry")),
-                self.default_observer
+                self.default_observer,
+                description="""The numerical identifiers of individual reaches in the order used by the inputs
+                `HydrographyGeometries`, `DownstreamReach`, `BottomWidth`, `BankSlope`, `OrganicContent`, `BulkDensity`
+                 and `Porosity`."""
             ),
             base.Input(
                 "HydrographyGeometries",
                 (attrib.Class(list[bytes]), attrib.Unit(None), attrib.Scales("space/base_geometry")),
-                self.default_observer
+                self.default_observer,
+                description="The geometries of individual reaches in WKB representation."
             ),
             base.Input(
                 "DownstreamReach",
                 (attrib.Class(list[str]), attrib.Unit(None), attrib.Scales("space/base_geometry")),
-                self.default_observer
+                self.default_observer,
+                description="The identifier of the reach that is located downstream of the current reach."
             ),
             base.Input(
                 "BottomWidth",
                 (attrib.Class(list[float]), attrib.Unit("m"), attrib.Scales("space/base_geometry")),
-                self.default_observer
+                self.default_observer,
+                description="The width of the reach at its bottom."
             ),
             base.Input(
                 "BankSlope",
                 (attrib.Class(list[float]), attrib.Unit("1"), attrib.Scales("space/base_geometry")),
-                self.default_observer
+                self.default_observer,
+                description="The slope of the reach."
             ),
             base.Input(
                 "OrganicContent",
                 (attrib.Class(list[float]), attrib.Unit("g/g"), attrib.Scales("space/base_geometry")),
-                self.default_observer
+                self.default_observer,
+                description="The amount of organic material in the sediment of the reach."
             ),
             base.Input(
                 "BulkDensity",
                 (attrib.Class(list[float]), attrib.Unit("kg/m³"), attrib.Scales("space/base_geometry")),
-                self.default_observer
+                self.default_observer,
+                description="The mass density of the reach sediment."
             ),
             base.Input(
                 "Porosity",
                 (attrib.Class(list[float]), attrib.Unit("m³/m³"), attrib.Scales("space/base_geometry")),
-                self.default_observer
+                self.default_observer,
+                description="The porosity of the reach sediment."
             )
         ])
         self._outputs = base.OutputContainer(self, [

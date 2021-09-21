@@ -17,7 +17,7 @@
 ## About the project
 A component that encapsulates the CascadeToxswa module for usage within the Landscape Model.  
 This is an automatically generated documentation based on the available code and in-line documentation. The current
-version of this document is from 2021-09-17.  
+version of this document is from 2021-09-21.  
 
 ### Built with
 * Landscape Model core version 1.7
@@ -362,41 +362,51 @@ Values of the `NumberWorkers` input may not have a physical unit.
 Values have to refer to the `global` scale.
 
 #### HydrographyReaches
+The numerical identifiers of individual reaches in the order used by the inputs
+`HydrographyGeometries`, `DownstreamReach`, `BottomWidth`, `BankSlope`, `OrganicContent`, `BulkDensity`
+ and `Porosity`.  
 `HydrographyReaches` expects its values to be of type `list`.
 Values of the `HydrographyReaches` input may not have a physical unit.
 Values have to refer to the `space/base_geometry` scale.
 
 #### HydrographyGeometries
+The geometries of individual reaches in WKB representation.  
 `HydrographyGeometries` expects its values to be of type `list`.
 Values of the `HydrographyGeometries` input may not have a physical unit.
 Values have to refer to the `space/base_geometry` scale.
 
 #### DownstreamReach
+The identifier of the reach that is located downstream of the current reach.  
 `DownstreamReach` expects its values to be of type `list`.
 Values of the `DownstreamReach` input may not have a physical unit.
 Values have to refer to the `space/base_geometry` scale.
 
 #### BottomWidth
+The width of the reach at its bottom.  
 `BottomWidth` expects its values to be of type `list`.
 The physical unit of the `BottomWidth` input values is `m`.
 Values have to refer to the `space/base_geometry` scale.
 
 #### BankSlope
+The slope of the reach.  
 `BankSlope` expects its values to be of type `list`.
 The physical unit of the `BankSlope` input values is `1`.
 Values have to refer to the `space/base_geometry` scale.
 
 #### OrganicContent
+The amount of organic material in the sediment of the reach.  
 `OrganicContent` expects its values to be of type `list`.
 The physical unit of the `OrganicContent` input values is `g/g`.
 Values have to refer to the `space/base_geometry` scale.
 
 #### BulkDensity
+The mass density of the reach sediment.  
 `BulkDensity` expects its values to be of type `list`.
 The physical unit of the `BulkDensity` input values is `kg/m³`.
 Values have to refer to the `space/base_geometry` scale.
 
 #### Porosity
+The porosity of the reach sediment.  
 `Porosity` expects its values to be of type `list`.
 The physical unit of the `Porosity` input values is `m³/m³`.
 Values have to refer to the `space/base_geometry` scale.
