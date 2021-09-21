@@ -15,6 +15,7 @@ class CascadeToxswa(base.Component):
     """
     # RELEASES
     VERSION = base.VersionCollection(
+        base.VersionInfo("2.1.3", "2021-09-21"),
         base.VersionInfo("2.1.2", "2021-09-17"),
         base.VersionInfo("2.1.1", "2021-09-14"),
         base.VersionInfo("2.1.0", "2021-09-13"),
@@ -94,6 +95,7 @@ class CascadeToxswa(base.Component):
     VERSION.changed("2.1.0", "Replaced shapefile input")
     VERSION.changed("2.1.1", "`Reaches` input renamed to `HydrographyReachesIds` ")
     VERSION.changed("2.1.2", "Make use of generic types for class attributes")
+    VERSION.added("2.1.3", "Input descriptions")
 
     def __init__(self, name, observer, store):
         super(CascadeToxswa, self).__init__(name, observer, store)
@@ -311,9 +313,9 @@ class CascadeToxswa(base.Component):
                 "HydrographyReaches",
                 (attrib.Class(list[int]), attrib.Unit(None), attrib.Scales("space/base_geometry")),
                 self.default_observer,
-                description="""The numerical identifiers of individual reaches in the order used by the hydrograohic 
-                inputs `HydrographyGeometries`, `DownstreamReach`, `BottomWidth`, `BankSlope`, `OrganicContent`,
-                `BulkDensity` and `Porosity`."""
+                description="""The numerical identifiers of individual reaches in the order used by the inputs
+                `HydrographyGeometries`, `DownstreamReach`, `BottomWidth`, `BankSlope`, `OrganicContent`, `BulkDensity`
+                 and `Porosity`."""
             ),
             base.Input(
                 "HydrographyGeometries",
