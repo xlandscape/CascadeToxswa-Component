@@ -1,5 +1,15 @@
 # Changelog
-This is the changelog for the CascadeToxswa component. It was automatically created on 2021-09-21.
+This is the changelog for the CascadeToxswa component. It was automatically created on 2021-10-11.
+
+## [2.1.4] - 2021-10-11
+
+### Added
+
+### Changed
+- Replaced legacy format strings by f-strings
+
+### Fixed
+
 
 ## [2.1.3] - 2021-09-21
 
