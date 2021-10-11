@@ -321,7 +321,7 @@ class CascadeToxswa(base.Component):
                 "HydrographyGeometries",
                 (attrib.Class(list[bytes]), attrib.Unit(None), attrib.Scales("space/base_geometry")),
                 self.default_observer,
-                description="The geometries of individual reaches in WKB representation."
+                description="The geometries of individual water body segments (reaches) in WKB representation."
             ),
             base.Input(
                 "DownstreamReach",
@@ -462,32 +462,33 @@ class CascadeToxswa(base.Component):
         with open(reaches_file, "w") as f:
             # noinspection SpellCheckingInspection
             f.write(
-                "RchID,RchIDDwn,Len,WidWatSys,SloSidWatSys,ConSus,CntOmSusSol,Rho,ThetaSat,CntOM,X,Y,Expsd\n" +
-                "-,-,m,m,-,g/m3,g/g,kg/m3,m3/m3,g/g,-,-,-\n")
+                "RchID,RchIDDwn,Len,WidWatSys,SloSidWatSys,ConSus,CntOmSusSol,Rho,ThetaSat,CntOM,X,Y,Expsd\n"
+                "-,-,m,m,-,g/m3,g/g,kg/m3,m3/m3,g/g,-,-,-\n"
+            )
         #     for feature in layer:
             for i in range(len(hydrography_reaches)):
                 key_r = hydrography_reaches[i]
                 geom = ogr.CreateGeometryFromWkb(hydrography_geometries[i])
                 coord = geom.GetPoint(0)
                 exposed = False
-                f.write("R" + str(key_r) + ",")
-                f.write("R" + downstream_reaches[i].upper() + ',')
-                f.write(str(round(geom.Length(), 1)) + ",")
-                f.write(str(round(bottom_widths[i], 2)) + ",")
-                f.write(str(round(1 / bank_slopes[i], 2)) + ",")
-                f.write(str(round(suspended_solids, 1)) + ",")
-                f.write(str(round(organic_contents[i] * 1.742, 2)) + ",")
-                f.write(str(round(bulk_densities[i])) + ",")
-                f.write(str(round(porosity[i], 2)) + ",")
-                f.write(str(round(organic_contents[i] * 1.742, 2)) + ",")
-                f.write(str(coord[0]) + ",")
-                f.write(str(coord[1]) + ",")
+                f.write(f"R{key_r},")
+                f.write(f"R{downstream_reaches[i].upper()},")
+                f.write(f"{round(geom.Length(), 1)},")
+                f.write(f"{round(bottom_widths[i], 2)},")
+                f.write(f"{round(1 / bank_slopes[i], 2)},")
+                f.write(f"{round(suspended_solids, 1)},")
+                f.write(f"{round(organic_contents[i] * 1.742, 2)},")
+                f.write(f"{round(bulk_densities[i])},")
+                f.write(f"{round(porosity[i], 2)},")
+                f.write(f"{round(organic_contents[i] * 1.742, 2)},")
+                f.write(f"{coord[0]},")
+                f.write(f"{coord[1]},")
                 i = int(np.where(reaches == key_r)[0])
                 discharge = self.inputs["WaterDischarge"].read(slices=(slice(number_time_steps), i)).values
                 depth = self.inputs["WaterDepth"].read(slices=(slice(number_time_steps), i)).values
                 mass_loading_spray_drift = self.inputs["MassLoadingSprayDrift"].read(
                     slices=(slice(int(number_time_steps / 24)), i)).values
-                with open(os.path.join(output_path, "R" + str(key_r) + ".csv"), "w") as f2:
+                with open(os.path.join(output_path, f"R{key_r}.csv"), "w") as f2:
                     f2.write("Time,QBou,DepWat,LoaDrf\n-,m3.s-1,m,mg.m-2\n")
                     for t in range(number_time_steps):
                         if t % 24 == 11:
@@ -497,11 +498,11 @@ class CascadeToxswa(base.Component):
                         else:
                             loading = 0
                         f2.write(
-                            (time_series_start + datetime.timedelta(hours=t)).strftime("%d-%b-%Y-%Hh%M") + ",")  # Time
-                        f2.write(format(float(discharge[t]), "E") + ",")  # QBou
-                        f2.write(str(round(float(depth[t]), 3)) + ",")  # DepWat
-                        f2.write(format(float(loading), "E") + "\n")  # LoaDrf
-                f.write(str(exposed) + "\n")
+                            f"{(time_series_start + datetime.timedelta(hours=t)).strftime('%d-%b-%Y-%Hh%M')},")
+                        f2.write(f"{format(float(discharge[t]), 'E')},")
+                        f2.write(f"{round(float(depth[t]), 3)},")
+                        f2.write(f"{format(float(loading), 'E')}\n")
+                f.write(f"{exposed}\n")
         return
 
     def prepare_temperature(self, output_file):
@@ -515,8 +516,8 @@ class CascadeToxswa(base.Component):
         with open(output_file, "w") as f:
             f.write("Time,TemAir\n-,C\n")
             for i in range(len(temperature)):
-                f.write((time_series_start + datetime.timedelta(i)).strftime("%d-%b-%Y") + ",")
-                f.write(str(round(temperature[i], 2)) + "\n")
+                f.write(f"{(time_series_start + datetime.timedelta(i)).strftime('%d-%b-%Y')},")
+                f.write(f"{round(temperature[i], 2)}\n")
         return
 
     def prepare_substance(self, output_file):
@@ -526,33 +527,34 @@ class CascadeToxswa(base.Component):
         :return: Nothing.
         """
         with open(output_file, "w") as f:
-            f.write("SubName,MolMas,PreVapRef,TemRefVap,MolEntVap,SlbWatRef,TemRefSlb,MolEntSlb,CofDifWatRef," +
-                    "TemRefDif,DT50WatRef,TemRefTraWat,MolEntTraWat,DT50SedRef,TemRefTraSed,MolEntTraSed,KomSed," +
-                    "ConLiqRefSed,ExpFreSed,KomSusSol,ConLiqRefSusSol,ExpFreSusSol,CofSorMph,NumDauWat,SubName," +
-                    "FraPrtDauWat,NumDauSed,SubName,FraPrtDauSed\n-,g.mol-1,Pa,C,kJ.mol-1,mg.L-1,C,kJ.mol-1,m2.d-1," +
-                    "C,d,C,kJ.mol-1,d,C,kJ.mol-1,L.kg-1,mg.L-1,-,L.kg-1,mg.L-1,-,L.kg-1,-,-,mol.mol-1,-,-,mol.mol-1\n")
-            f.write("CMP_A,{},".format(self.inputs["MolarMass"].read().values))
-            f.write(str(self.inputs["SaturatedVapourPressure"].read().values) + ",")
-            f.write(str(self.inputs["ReferenceTemperatureForSaturatedVapourPressure"].read().values) + ",")
-            f.write(str(self.inputs["MolarEnthalpyOfVaporization"].read().values) + ",")
-            f.write(str(self.inputs["SolubilityInWater"].read().values) + ",")
-            f.write(str(self.inputs["ReferenceTemperatureForWaterSolubility"].read().values) + ",")
-            f.write(str(self.inputs["MolarEnthalpyOfDissolution"].read().values) + ",")
-            f.write(str(self.inputs["DiffusionCoefficient"].read().values) + ",")
-            f.write(str(self.inputs["ReferenceTemperatureForDiffusion"].read().values) + ",")
-            f.write(str(self.inputs["HalfLifeTransformationInWater"].read().values) + ",")
-            f.write(str(self.inputs["TemperatureAtWhichHalfLifeInWaterWasMeasured"].read().values) + ",")
-            f.write(str(self.inputs["MolarActivationEnthalpyOfTransformationInWater"].read().values) + ",")
-            f.write(str(self.inputs["HalfLifeTransformationInSediment"].read().values) + ",")
-            f.write(str(self.inputs["TemperatureAtWhichHalfLifeInSedimentWasMeasured"].read().values) + ",")
-            f.write(str(self.inputs["MolarActivationEnthalpyOfTransformationInSediment"].read().values) + ",")
-            f.write(str(self.inputs["CoefficientForEquilibriumAdsorptionInSediment"].read().values) + ",")
-            f.write(str(self.inputs["ReferenceConcentrationInLiquidPhaseInSediment"].read().values) + ",")
-            f.write(str(self.inputs["FreundlichExponentInSediment"].read().values) + ",")
-            f.write(str(self.inputs["CoefficientForEquilibriumAdsorptionOfSuspendedSoils"].read().values) + ",")
-            f.write(str(self.inputs["ReferenceConcentrationForSuspendedSoils"].read().values) + ",")
-            f.write(str(self.inputs["FreundlichExponentForSuspendedSoils"].read().values) + ",")
-            f.write(str(self.inputs["CoefficientForLinearAdsorptionOnMacrophytes"].read().values) + ",0,-,0,0,-\n")
+            f.write(
+                "SubName,MolMas,PreVapRef,TemRefVap,MolEntVap,SlbWatRef,TemRefSlb,MolEntSlb,CofDifWatRef,TemRefDif,"
+                "DT50WatRef,TemRefTraWat,MolEntTraWat,DT50SedRef,TemRefTraSed,MolEntTraSed,KomSed,ConLiqRefSed,"
+                "ExpFreSed,KomSusSol,ConLiqRefSusSol,ExpFreSusSol,CofSorMph,NumDauWat,SubName,FraPrtDauWat,NumDauSed,"
+                "SubName,FraPrtDauSed\n-,g.mol-1,Pa,C,kJ.mol-1,mg.L-1,C,kJ.mol-1,m2.d-1,C,d,C,kJ.mol-1,d,C,kJ.mol-1,"
+                "L.kg-1,mg.L-1,-,L.kg-1,mg.L-1,-,L.kg-1,-,-,mol.mol-1,-,-,mol.mol-1\n")
+            f.write(f"CMP_A,{self.inputs['MolarMass'].read().values},")
+            f.write(f"{self.inputs['SaturatedVapourPressure'].read().values},")
+            f.write(f"{self.inputs['ReferenceTemperatureForSaturatedVapourPressure'].read().values},")
+            f.write(f"{self.inputs['MolarEnthalpyOfVaporization'].read().values},")
+            f.write(f"{self.inputs['SolubilityInWater'].read().values},")
+            f.write(f"{self.inputs['ReferenceTemperatureForWaterSolubility'].read().values},")
+            f.write(f"{self.inputs['MolarEnthalpyOfDissolution'].read().values},")
+            f.write(f"{self.inputs['DiffusionCoefficient'].read().values},")
+            f.write(f"{self.inputs['ReferenceTemperatureForDiffusion'].read().values},")
+            f.write(f"{self.inputs['HalfLifeTransformationInWater'].read().values},")
+            f.write(f"{self.inputs['TemperatureAtWhichHalfLifeInWaterWasMeasured'].read().values},")
+            f.write(f"{self.inputs['MolarActivationEnthalpyOfTransformationInWater'].read().values},")
+            f.write(f"{self.inputs['HalfLifeTransformationInSediment'].read().values},")
+            f.write(f"{self.inputs['TemperatureAtWhichHalfLifeInSedimentWasMeasured'].read().values},")
+            f.write(f"{self.inputs['MolarActivationEnthalpyOfTransformationInSediment'].read().values},")
+            f.write(f"{self.inputs['CoefficientForEquilibriumAdsorptionInSediment'].read().values},")
+            f.write(f"{self.inputs['ReferenceConcentrationInLiquidPhaseInSediment'].read().values},")
+            f.write(f"{self.inputs['FreundlichExponentInSediment'].read().values},")
+            f.write(f"{self.inputs['CoefficientForEquilibriumAdsorptionOfSuspendedSoils'].read().values},")
+            f.write(f"{self.inputs['ReferenceConcentrationForSuspendedSoils'].read().values},")
+            f.write(f"{self.inputs['FreundlichExponentForSuspendedSoils'].read().values},")
+            f.write(f"{self.inputs['CoefficientForLinearAdsorptionOnMacrophytes'].read().values},0,-,0,0,-\n")
         return
 
     def prepare_parameterization(self, parameter_file, processing_path, reach_file, temperature_file, substance_file):
@@ -565,24 +567,23 @@ class CascadeToxswa(base.Component):
         :param substance_file: The path of the substance file.
         :return: Nothing.
         """
+        end_date_sim = (self.inputs["TimeSeriesStart"].read().values + datetime.timedelta(
+            self.inputs["MassLoadingSprayDrift"].describe()["shape"][0] - 1)).strftime("%d-%b-%Y")
         with open(parameter_file, "w") as f:
             f.write("[general]\n")
-            f.write("nWorker = {}\n".format(self.inputs["NumberWorkers"].read().values))
-            f.write("inputDir = " + processing_path + "\n")
+            f.write(f"nWorker = {self.inputs['NumberWorkers'].read().values}\n")
+            f.write(f"inputDir = {processing_path}\n")
             f.write("experimentName = e1\n")
             f.write("reachSelection = all\n")
-            f.write("reachFile = " + reach_file + "\n")
-            f.write("startDateSim = " + self.inputs["TimeSeriesStart"].read().values.strftime("%d-%b-%Y") + "\n")
-            f.write("endDateSim = " +
-                    (self.inputs["TimeSeriesStart"].read().values + datetime.timedelta(
-                        self.inputs["MassLoadingSprayDrift"].describe()["shape"][0] - 1)).strftime("%d-%b-%Y") +
-                    "\n")
+            f.write(f"reachFile = {reach_file}\n")
+            f.write(f"startDateSim = {self.inputs['TimeSeriesStart'].read().values.strftime('%d-%b-%Y')}\n")
+            f.write(f"endDateSim = {end_date_sim}\n")
             f.write("\n[toxswa]\n")
-            f.write("toxswaDir = " + os.path.join(os.path.dirname(__file__), "module", "TOXSWA") + "\n")
+            f.write(f"toxswaDir = {os.path.join(os.path.dirname(__file__), 'module', 'TOXSWA')}\n")
             f.write("fileNameHydMassLoad = \n")
             f.write("timeStepDefault = 600\n")
-            f.write("temperatureFile = " + temperature_file + "\n")
-            f.write("substanceFile = " + substance_file + "\n")
+            f.write(f"temperatureFile = {temperature_file}\n")
+            f.write(f"substanceFile = {substance_file}\n")
             f.write("substanceNames = CMP_A\n")
             f.write("timeStepMin = 10\n")
             f.write("outputVars = ConLiqWatTgtAvg,ConLiqWatTgtAvgHrAvg,CntSedTgt1\n")
@@ -632,7 +633,7 @@ class CascadeToxswa(base.Component):
             water_concentration = np.zeros(number_time_steps)
             water_concentration_hr = np.zeros(number_time_steps)
             sediment_concentration = np.zeros(number_time_steps)
-            with open(os.path.join(output_path, "R" + str(reach) + ".csv")) as f:
+            with open(os.path.join(output_path, f"R{reach}.csv")) as f:
                 f.readline()
                 for t in range(number_time_steps):
                     fields = f.readline().split(",")
