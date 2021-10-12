@@ -1,6 +1,4 @@
-"""
-Component that encapsulates the CascadeToxswa module.
-"""
+"""Component that encapsulates the CascadeToxswa module."""
 import datetime
 import numpy as np
 import os
@@ -10,9 +8,7 @@ import attrib
 
 
 class CascadeToxswa(base.Component):
-    """
-    A component that encapsulates the CascadeToxswa module for usage within the Landscape Model.
-    """
+    """A component that encapsulates the CascadeToxswa module for usage within the Landscape Model."""
     # RELEASES
     VERSION = base.VersionCollection(
         base.VersionInfo("2.1.4", "2021-10-11"),
@@ -100,6 +96,14 @@ class CascadeToxswa(base.Component):
     VERSION.changed("2.1.4", "Replaced legacy format strings by f-strings")
 
     def __init__(self, name, observer, store):
+        """
+        Initializes the CascadeToxswa component.
+
+        Args:
+            name: The name of the component.
+            observer: The default observer used by the component.
+            store: The data store used by the component.
+        """
         super(CascadeToxswa, self).__init__(name, observer, store)
         self._module = base.Module("CMF-TOXWA_coupling", "0.5", "https://doi.org/10.18174/547183")
         self._inputs = base.InputContainer(self, [
@@ -268,8 +272,8 @@ class CascadeToxswa(base.Component):
                 "ReferenceConcentrationInLiquidPhaseInSediment",
                 (attrib.Class(float, 1), attrib.Unit("mg/l", 1), attrib.Scales("global", 1)),
                 self.default_observer,
-                description="""The reference concentration in liquid phase in sediment of the substance depositing at 
-                the water body surface."""
+                description="""The reference concentration of the deposited substance in the liquid phase of the 
+                sediment ."""
             ),
             base.Input(
                 "FreundlichExponentInSediment",
@@ -418,12 +422,13 @@ class CascadeToxswa(base.Component):
                 }
             )
         ])
-        return
 
     def run(self):
         """
         Runs the component.
-        :return: Nothing.
+
+        Returns:
+            Nothing.
         """
         processing_path = self.inputs["ProcessingPath"].read().values
         if " " in processing_path or " " in __file__:
@@ -440,14 +445,17 @@ class CascadeToxswa(base.Component):
                                       substance_file)
         self.run_cascade_toxswa(parameterization_file, processing_path)
         self.read_outputs(os.path.join(processing_path, "experiments", "e1"))
-        return
 
     def prepare_hydrological_data(self, output_path, reaches_file):
         """
         Prepares the hydrological input data for the module.
-        :param output_path: The path for the hydrological input data.
-        :param reaches_file: The path for the reaches input file.
-        :return: Nothing.
+
+        Args:
+            output_path: The path for the hydrological input data.
+            reaches_file: The path for the reaches input file.
+
+        Returns:
+            Nothing.
         """
         hydrography_reaches = self.inputs["HydrographyReaches"].read().values
         hydrography_geometries = self.inputs["HydrographyGeometries"].read().values
@@ -467,7 +475,6 @@ class CascadeToxswa(base.Component):
                 "RchID,RchIDDwn,Len,WidWatSys,SloSidWatSys,ConSus,CntOmSusSol,Rho,ThetaSat,CntOM,X,Y,Expsd\n"
                 "-,-,m,m,-,g/m3,g/g,kg/m3,m3/m3,g/g,-,-,-\n"
             )
-        #     for feature in layer:
             for i in range(len(hydrography_reaches)):
                 key_r = hydrography_reaches[i]
                 geom = ogr.CreateGeometryFromWkb(hydrography_geometries[i])
@@ -491,6 +498,7 @@ class CascadeToxswa(base.Component):
                 mass_loading_spray_drift = self.inputs["MassLoadingSprayDrift"].read(
                     slices=(slice(int(number_time_steps / 24)), i)).values
                 with open(os.path.join(output_path, f"R{key_r}.csv"), "w") as f2:
+                    # noinspection GrazieInspection
                     f2.write("Time,QBou,DepWat,LoaDrf\n-,m3.s-1,m,mg.m-2\n")
                     for t in range(number_time_steps):
                         if t % 24 == 11:
@@ -505,13 +513,16 @@ class CascadeToxswa(base.Component):
                         f2.write(f"{round(float(depth[t]), 3)},")
                         f2.write(f"{format(float(loading), 'E')}\n")
                 f.write(f"{exposed}\n")
-        return
 
     def prepare_temperature(self, output_file):
         """
         Prepares the temperature input for the module.
-        :param output_file: The path for the input file.
-        :return: Nothing.
+
+        Args:
+            output_file: The path for the input file.
+
+        Returns:
+            Nothing.
         """
         temperature = self.inputs["Temperature"].read().values
         time_series_start = self.inputs["TimeSeriesStart"].read().values.date()
@@ -520,15 +531,19 @@ class CascadeToxswa(base.Component):
             for i in range(len(temperature)):
                 f.write(f"{(time_series_start + datetime.timedelta(i)).strftime('%d-%b-%Y')},")
                 f.write(f"{round(temperature[i], 2)}\n")
-        return
 
     def prepare_substance(self, output_file):
         """
         Prepares the substance information for the module.
-        :param output_file: The name for the input file.
-        :return: Nothing.
+
+        Args:
+            output_file: The name for the input file.
+
+        Returns:
+            Nothing.
         """
         with open(output_file, "w") as f:
+            # noinspection GrazieInspection
             f.write(
                 "SubName,MolMas,PreVapRef,TemRefVap,MolEntVap,SlbWatRef,TemRefSlb,MolEntSlb,CofDifWatRef,TemRefDif,"
                 "DT50WatRef,TemRefTraWat,MolEntTraWat,DT50SedRef,TemRefTraSed,MolEntTraSed,KomSed,ConLiqRefSed,"
@@ -557,17 +572,20 @@ class CascadeToxswa(base.Component):
             f.write(f"{self.inputs['ReferenceConcentrationForSuspendedSoils'].read().values},")
             f.write(f"{self.inputs['FreundlichExponentForSuspendedSoils'].read().values},")
             f.write(f"{self.inputs['CoefficientForLinearAdsorptionOnMacrophytes'].read().values},0,-,0,0,-\n")
-        return
 
     def prepare_parameterization(self, parameter_file, processing_path, reach_file, temperature_file, substance_file):
         """
         Prepares the module's parameterization.
-        :param parameter_file: The path for the parameterization file.
-        :param processing_path: The processing path for the module.
-        :param reach_file: The path of the reach file.
-        :param temperature_file: The path of the temperature file.
-        :param substance_file: The path of the substance file.
-        :return: Nothing.
+
+        Args:
+            parameter_file: The path for the parameterization file.
+            processing_path: The processing path for the module.
+            reach_file: The path of the reach file.
+            temperature_file: The path of the temperature file.
+            substance_file: The path of the substance file.
+
+        Returns:
+            Nothing.
         """
         end_date_sim = (self.inputs["TimeSeriesStart"].read().values + datetime.timedelta(
             self.inputs["MassLoadingSprayDrift"].describe()["shape"][0] - 1)).strftime("%d-%b-%Y")
@@ -595,14 +613,17 @@ class CascadeToxswa(base.Component):
             # noinspection SpellCheckingInspection
             f.write("minMassFlowTimestep = 0.1\n")
             f.write("deleteMfuFiles = True\n")
-            return
 
     def run_cascade_toxswa(self, parameterization_file, processing_path):
         """
         Runs the module.
-        :param parameterization_file: The path of the parameterization file.
-        :param processing_path: The processing path of the module.
-        :return: Nothing.
+
+        Args:
+            parameterization_file: The path of the parameterization file.
+            processing_path: The processing path of the module.
+
+        Returns:
+            Nothing.
         """
         python_exe = os.path.join(os.path.dirname(__file__), "module", "WPy64-3760", "python-3.7.6.amd64",
                                   "python.exe")
@@ -614,13 +635,16 @@ class CascadeToxswa(base.Component):
             self.default_observer,
             {"PATH": ""}
         )
-        return
 
     def read_outputs(self, output_path):
         """
         Reads the module's outputs into the Landscape Model data store.
-        :param output_path: The output path of the module.
-        :return: Nothing.
+
+        Args:
+            output_path: The output path of the module.
+
+        Returns:
+            Nothing.
         """
         reaches = self.inputs["HydrographyReachIds"].read().values
         self.outputs["Reaches"].set_values(reaches.tolist())
@@ -648,4 +672,3 @@ class CascadeToxswa(base.Component):
                 water_concentration_hr, slices=(slice(number_time_steps), i), create=False)
             self.outputs["CntSedTgt1"].set_values(
                 sediment_concentration, slices=(slice(number_time_steps), i), create=False)
-        return
