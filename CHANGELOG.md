@@ -1,5 +1,15 @@
 # Changelog
-This is the changelog for the CascadeToxswa component. It was automatically created on 2021-10-11.
+This is the changelog for the CascadeToxswa component. It was automatically created on 2021-10-12.
+
+## [2.1.5] - 2021-10-12
+
+### Added
+
+### Changed
+- Switched to Google docstring style
+
+### Fixed
+
 
 ## [2.1.4] - 2021-10-11
 
