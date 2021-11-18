@@ -9,6 +9,9 @@ This is the changelog for the CascadeToxswa component. It was automatically crea
 ### Changed
 - Some improvements to reduce the size of the MFU files
 
+### Fixed
+- Fix deadlock problem caused by TOXSWA deleting temperature file
+
 ## [2.1.5] - 2021-10-12
 
 ### Added
