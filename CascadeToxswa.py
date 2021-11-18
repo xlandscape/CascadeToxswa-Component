@@ -123,13 +123,6 @@ class CascadeToxswa(base.Component):
                 description="The density of suspended solids that applies to all reaches."
             ),
             base.Input(
-                "HydrographyReachIds",
-                (attrib.Class(np.ndarray, 1), attrib.Unit(None, 1), attrib.Scales("space/reach", 1)),
-                self.default_observer,
-                description="""The numeric identifiers for individual reaches (in the order of the `Hydrography` input)
-                that apply scenario-wide."""
-            ),
-            base.Input(
                 "TimeSeriesStart",
                 (attrib.Class(datetime.date, 1), attrib.Unit(None, 1), attrib.Scales("global", 1)),
                 self.default_observer,
@@ -318,14 +311,6 @@ class CascadeToxswa(base.Component):
                 machine, especially other Monte Carlo runs of the Landscape Model."""
             ),
             base.Input(
-                "HydrographyReaches",
-                (attrib.Class(list[int]), attrib.Unit(None), attrib.Scales("space/base_geometry")),
-                self.default_observer,
-                description="""The numerical identifiers of individual reaches in the order used by the inputs
-                `HydrographyGeometries`, `DownstreamReach`, `BottomWidth`, `BankSlope`, `OrganicContent`, `BulkDensity`
-                 and `Porosity`."""
-            ),
-            base.Input(
                 "HydrographyGeometries",
                 (attrib.Class(list[bytes]), attrib.Unit(None), attrib.Scales("space/base_geometry")),
                 self.default_observer,
@@ -368,62 +353,56 @@ class CascadeToxswa(base.Component):
                 description="The porosity of the reach sediment."
             )
         ])
-        self._outputs = base.OutputContainer(self, [
-            base.Output(
-                "Reaches",
-                store,
-                self,
-                {"scales": "space/reach", "unit": None},
-                """The numerical identifiers of the reaches in the order presented by the other outputs. See the 
-                `Reaches` input for further details on identifiers.""",
-                {"type": "list[int]"}
-            ),
-            base.Output(
-                "ConLiqWatTgtAvg",
-                store,
-                self,
-                {"data_type": np.float, "scales": "time/hour, space/base_geometry", "unit": "g/m³"},
-                "The average concentration along the reach at the specified moment in time in the water phase.",
-                {
-                    "type": np.ndarray,
-                    "shape": (
-                        "the number of time steps as given by the [WaterDischarge](#WaterDischarge) input",
-                        "the number of reaches as given by the `Reaches` input"
-                    ),
-                    "chunks": "for fast retrieval of time series"
-                }
-            ),
-            base.Output(
-                "ConLiqWatTgtAvgHrAvg",
-                store,
-                self,
-                {"data_type": np.float, "scales": "time/hour, space/base_geometry", "unit": "g/m³"},
-                "The time weighted average of concentration in the water phase averaged for a reach.",
-                {
-                    "type": np.ndarray,
-                    "shape": (
-                        "the number of time steps as given by the [WaterDischarge](#WaterDischarge) input",
-                        "the number of reaches as given by the `Reaches` input"
-                    ),
-                    "chunks": "for fast retrieval of time series"
-                }
-            ),
-            base.Output(
-                "CntSedTgt1",
-                store,
-                self,
-                {"data_type": np.float, "scales": "time/hour, space/base_geometry", "unit": "g/kg"},
-                "The total content in target layer 1 of sediment atb the specified time.",
-                {
-                    "type": np.ndarray,
-                    "shape": (
-                        "the number of time steps as given by the [WaterDischarge](#WaterDischarge) input",
-                        "the number of reaches as given by the `Reaches` input"
-                    ),
-                    "chunks": "for fast retrieval of time series"
-                }
+        self._outputs = base.OutputContainer(
+            self,
+            (
+                base.Output(
+                    "ConLiqWatTgtAvg",
+                    store,
+                    self,
+                    {"data_type": np.float, "scales": "time/hour, space/base_geometry", "unit": "g/m³"},
+                    "The average concentration along the reach at the specified moment in time in the water phase.",
+                    {
+                        "type": np.ndarray,
+                        "shape": (
+                            "the number of time steps as given by the [WaterDischarge](#WaterDischarge) input",
+                            "the number of reaches as given by the `Reaches` input"
+                        ),
+                        "chunks": "for fast retrieval of time series"
+                    }
+                ),
+                base.Output(
+                    "ConLiqWatTgtAvgHrAvg",
+                    store,
+                    self,
+                    {"data_type": np.float, "scales": "time/hour, space/base_geometry", "unit": "g/m³"},
+                    "The time weighted average of concentration in the water phase averaged for a reach.",
+                    {
+                        "type": np.ndarray,
+                        "shape": (
+                            "the number of time steps as given by the [WaterDischarge](#WaterDischarge) input",
+                            "the number of reaches as given by the `Reaches` input"
+                        ),
+                        "chunks": "for fast retrieval of time series"
+                    }
+                ),
+                base.Output(
+                    "CntSedTgt1",
+                    store,
+                    self,
+                    {"data_type": np.float, "scales": "time/hour, space/base_geometry", "unit": "g/kg"},
+                    "The total content in target layer 1 of sediment atb the specified time.",
+                    {
+                        "type": np.ndarray,
+                        "shape": (
+                            "the number of time steps as given by the [WaterDischarge](#WaterDischarge) input",
+                            "the number of reaches as given by the `Reaches` input"
+                        ),
+                        "chunks": "for fast retrieval of time series"
+                    }
+                )
             )
-        ])
+        )
 
     def run(self):
         """
@@ -459,10 +438,10 @@ class CascadeToxswa(base.Component):
         Returns:
             Nothing.
         """
-        hydrography_reaches = self.inputs["HydrographyReaches"].read().values
-        hydrography_geometries = self.inputs["HydrographyGeometries"].read().values
+        hydrography_geometries = self.inputs["HydrographyGeometries"].read()
+        hydrography_reaches = hydrography_geometries.element_names[0].get_values()
         suspended_solids = self.inputs["SuspendedSolids"].read().values
-        reaches = self.inputs["HydrographyReachIds"].read().values
+        reaches = self.inputs["MassLoadingSprayDrift"].describe()["element_names"][1].get_values()
         time_series_start = self.inputs["TimeSeriesStart"].read().values
         number_time_steps = self.inputs["WaterDischarge"].describe()["shape"][0]
         downstream_reaches = self.inputs["DownstreamReach"].read().values
@@ -479,7 +458,7 @@ class CascadeToxswa(base.Component):
             )
             for i in range(len(hydrography_reaches)):
                 key_r = hydrography_reaches[i]
-                geom = ogr.CreateGeometryFromWkb(hydrography_geometries[i])
+                geom = ogr.CreateGeometryFromWkb(hydrography_geometries.values[i])
                 coord = geom.GetPoint(0)
                 exposed = False
                 f.write(f"R{key_r},")
@@ -648,16 +627,27 @@ class CascadeToxswa(base.Component):
         Returns:
             Nothing.
         """
-        reaches = self.inputs["HydrographyReachIds"].read().values
-        self.outputs["Reaches"].set_values(reaches.tolist())
+        deposition_info = self.inputs["MassLoadingSprayDrift"].read()
         number_time_steps = self.inputs["WaterDischarge"].describe()["shape"][0]
         self.outputs["ConLiqWatTgtAvg"].set_values(
-            np.ndarray, shape=(number_time_steps, reaches.shape[0]), chunks=(min(65536, number_time_steps), 1))
+            np.ndarray,
+            shape=(number_time_steps, deposition_info.values.shape[1]),
+            chunks=(min(65536, number_time_steps), 1),
+            element_names=(None, deposition_info.element_names[1])
+        )
         self.outputs["ConLiqWatTgtAvgHrAvg"].set_values(
-            np.ndarray, shape=(number_time_steps, reaches.shape[0]), chunks=(min(65536, number_time_steps), 1))
+            np.ndarray,
+            shape=(number_time_steps, deposition_info.values.shape[1]),
+            chunks=(min(65536, number_time_steps), 1),
+            element_names=(None, deposition_info.element_names[1])
+        )
         self.outputs["CntSedTgt1"].set_values(
-            np.ndarray, shape=(number_time_steps, reaches.shape[0]),  chunks=(min(65536, number_time_steps), 1))
-        for i, reach in enumerate(reaches):
+            np.ndarray,
+            shape=(number_time_steps, deposition_info.values.shape[1]),
+            chunks=(min(65536, number_time_steps), 1),
+            element_names=(None, deposition_info.element_names[1])
+        )
+        for i, reach in enumerate(deposition_info.element_names[1].get_values()):
             water_concentration = np.zeros(number_time_steps)
             water_concentration_hr = np.zeros(number_time_steps)
             sediment_concentration = np.zeros(number_time_steps)
