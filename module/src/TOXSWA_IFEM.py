@@ -3,7 +3,7 @@
 # https://github.com/mbraakhekke/heft.git@relative_imports_fix (use pip install git+https://...)
 # The version on PiPy does not work due to incorrect syntax for local imports
 import os, shutil, pandas, sys, numpy, datetime as dt, time, util, configparser as cp
-import preprocess, postprocess
+import postprocess
 from util import writeOutputTable
 from Catchment import Catchment
 from scheduler import Scheduler
@@ -80,7 +80,7 @@ class CMF_TOXSWA_coupler(object):
 
 if __name__ == "__main__":
     configFile = sys.argv[1]
-    
+
     config = cp.ConfigParser()
     config.read(os.path.join(configFile))
     
