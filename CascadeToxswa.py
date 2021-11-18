@@ -11,6 +11,7 @@ class CascadeToxswa(base.Component):
     """A component that encapsulates the CascadeToxswa module for usage within the Landscape Model."""
     # RELEASES
     VERSION = base.VersionCollection(
+        base.VersionInfo("2.1.6", "2021-11-18"),
         base.VersionInfo("2.1.5", "2021-10-12"),
         base.VersionInfo("2.1.4", "2021-10-11"),
         base.VersionInfo("2.1.3", "2021-09-21"),
@@ -96,6 +97,8 @@ class CascadeToxswa(base.Component):
     VERSION.added("2.1.3", "Input descriptions")
     VERSION.changed("2.1.4", "Replaced legacy format strings by f-strings")
     VERSION.changed("2.1.5", "Switched to Google docstring style")
+    VERSION.changed("2.1.6", "Removed reach inputs and output")
+    VERSION.changed("2.1.6", "Reports element names of outputs")
 
     def __init__(self, name, observer, store):
         """
