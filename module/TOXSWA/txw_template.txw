@@ -26,6 +26,8 @@ No         OptCalcStabilityWater
 No         OptCalcStabilitySediment
 <MaxTimStpWat>        MaxTimStpWat (s) ! Maximum calculation time step in water layer [0.001|3600]
 <MaxTimStpSed>        MaxTimStpSed (s) ! Maximum calculation time step in sediment [0.001|3600]
+0.0         FlmStpTol (g)     ! Hourly downstream mass flux below which only one value per hour will be written to MFU file
+
 
 * IOMode: options for screen output control, for use for grid computing
 * IOMode_Std    standard screen
