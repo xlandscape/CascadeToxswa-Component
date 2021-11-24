@@ -3,7 +3,7 @@
 # https://github.com/mbraakhekke/heft.git@relative_imports_fix (use pip install git+https://...)
 # The version on PiPy does not work due to incorrect syntax for local imports
 import os, shutil, pandas, sys, numpy, datetime as dt, time, util, configparser as cp
-import preprocess, postprocess
+import postprocess
 from util import writeOutputTable
 from Catchment import Catchment
 from scheduler import Scheduler
@@ -12,6 +12,15 @@ from io import StringIO
 
 hydrologyMassLoadingsFileBase = '.csv'
 experimentRootDirName = 'experiments'
+
+def main(configFile):
+    config = cp.ConfigParser()
+    config.read(os.path.join(configFile))
+
+    coupler = CMF_TOXSWA_coupler(config)
+    coupler()
+    coupler.postprocess()
+    
 
 class CMF_TOXSWA_coupler(object):
     """
@@ -54,8 +63,8 @@ class CMF_TOXSWA_coupler(object):
         """
         Runs TOXSWA for all reaches
         """
-        self.scheduler = Scheduler(int(config['general']['nWorker']), Toxswa, self.experimentDir, 
-                                   config['general'], config['toxswa'],self.catchment)
+        self.scheduler = Scheduler(int(self.config['general']['nWorker']), Toxswa, self.experimentDir, 
+                                   self.config['general'], self.config['toxswa'],self.catchment)
         self.scheduler.init()
 
         priorityVals = [self.scheduler.priority[r] for r in self.catchment.reachIDs]
@@ -69,32 +78,17 @@ class CMF_TOXSWA_coupler(object):
         util.closeDiagnFile()
 
     def postprocess(self):
-        substName = config['toxswa']['substanceNames']
-        if config.has_option('postprocess','timeRangeMassBalancePlot'):
-            timeStepRange = list(map(float,config['postprocess']['timeRangeMassBalancePlot'].split(',')))
+        substName = self.config['toxswa']['substanceNames']
+        if self.config.has_option('postprocess','timeRangeMassBalancePlot'):
+            timeStepRange = list(map(float,self.config['postprocess']['timeRangeMassBalancePlot'].split(',')))
             postprocess.processCatchmentMassBalance(self.catchment, substName,self.experimentDir, timeStepRange = timeStepRange)
-        if config.has_option('postprocess','timeRangeConcPlot'):
-            timeStepRange = list(map(float,config['postprocess']['timeRangeConcPlot'].split(',')))
-            stepSize = int(config['postprocess']['concPlotStep'])
+        if self.config.has_option('postprocess','timeRangeConcPlot'):
+            timeStepRange = list(map(float,self.config['postprocess']['timeRangeConcPlot'].split(',')))
+            stepSize = int(self.config['postprocess']['concPlotStep'])
             postprocess.concMap(self.catchment, self.experimentDir, substName, timeStepRange, stepSize = stepSize, percCutoff = 99)
 
 if __name__ == "__main__":
     configFile = sys.argv[1]
-    
-    config = cp.ConfigParser()
-    config.read(os.path.join(configFile))
-    
-    if False:
-        reachSel = config['general']['reachSelection'].split(',')
-        reachList = preprocess.createReachFile(os.path.join('data package Rummen','ReachList.csv'),
-                                               os.path.join('data package Rummen','SprayDriftList.csv'),
-                                               config['general']['inputDir'], config['general']['reachFile'], reachSel)
-     
-        preprocess.createHydrologyLoadingsFile(os.path.join('data package Rummen','SprayDriftList.csv'),
-                                    os.path.join('data package Rummen','Rummen_reaches_all.csv'),
-                                    reachList,config['general']['inputDir'],hydrologyMassLoadingsFileBase)
+    main(configFile)
 
-    coupler = CMF_TOXSWA_coupler(config)
-    coupler()
-    coupler.postprocess()
 

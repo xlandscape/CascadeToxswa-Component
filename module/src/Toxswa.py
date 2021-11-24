@@ -479,20 +479,10 @@ class Toxswa(object):
         mfuOut = re.sub("<ReachID>", "Reach" + reach.ID, mfuTempl)
         mfuOut = re.sub("<substanceName>", self.substanceNames[0], mfuOut)
 
-        startTime =  np.datetime64(mfsTable.DateTime.loc[0])
         with open(os.path.join(self.workDir, "Reach" + str(reach.ID) + ".mfu"),'w') as mfuFile:
             mfuFile.write(mfuOut + "\n")
-            for idx,mfsRow in mfsTable.iterrows():
-                massFlowTimestepLength = np.timedelta64(int(1000000*3600*1./mfsRow.nStep),'us')
-                firstTime = mfsRow.DateTime + massFlowTimestepLength
-                lastTime = firstTime + massFlowTimestepLength*mfsRow.nStep
-                dateTimes = np.arange(start = firstTime,stop=lastTime,step=massFlowTimestepLength,dtype='datetime64[us]')
-                for ts in dateTimes.astype('datetime64[ms]'):
-                    daysSinceStart = (ts - startTime)/np.timedelta64(1,'D')
-                    dateTimeStr = ts.item().strftime(Toxswa.dateTimeFormatMfu)[:-3]
-                    mfuFile.write("{:16.8f} {} {:20.14E}\n".format(daysSinceStart,dateTimeStr,0.0))
-
-
+            mfuFile.write("NO_MASS_FLUX" + "\n")
+   
     def processOutputFiles(self,reach,keepOrig = True):
         toxswa_output = self.get_all_output(reach)
         toxswa_output.to_csv(os.path.join(self.outputDir,reach.ID + '.csv'), index = False)
