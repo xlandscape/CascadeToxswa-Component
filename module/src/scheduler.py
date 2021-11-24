@@ -91,52 +91,54 @@ class Scheduler(object):
             self.commandQueue.put((self.priority[reach.ID],reach.unlink(), 'run'))
 
         # Main execution loop. Keep going until catchment says we're done.
-        while not self.catchment.isDone:
+        try:
+            while not self.catchment.isDone:
+                if self.parallel:
+                    # wait for a worker to report back. This will block execution until 
+                    # something is in the report queue
+                    report = self.reportQueue.get()
+                else:
+                    report = self.workers[0].run()
+
+                if report['status'] == self.model.flagError:
+                    raise Exception('TOXSWA crashed for reach '+report['reachID'])
+
+                if report['action'] == 'run':
+                    for var in report:
+                        if var=='reachID': continue
+                        updateDiagnOutput(var,report[var])
+                    writeDiagnOuput(report['reachID'])
+
+                # Inform the reach object of the status. This will signal the catchment 
+                # object, which will  figure out which reaches can start next and add 
+                # those to the command queue
+                if report['status'] in [self.model.flagOk, self.model.flagSkipReach, self.model.flagSkipExist]:
+                    reach = self.catchment[report['reachID']]
+                    if reach.status == Reach.flagRunning:
+                        reach.status = Reach.flagRunDone
+                    elif reach.status == Reach.flagCleaning:
+                        reach.status = Reach.flagDone
+                
+                # If new reaches can start, add them to the command queue
+                for reach in self.catchment.canStartReaches:
+                    reach.status = Reach.flagRunning
+                    self.commandQueue.put((self.priority[reach.ID],reach.unlink(),'run'))
+
+                for reach in self.catchment.canBeCleanedReaches:
+                    reach.status = Reach.flagCleaning
+                    self.commandQueue.put((self.priority[reach.ID],reach.unlink(),'cleanup'))
+
+        finally:
             if self.parallel:
-                # wait for a worker to report back. This will block execution until 
-                # something is in the report queue
-                report = self.reportQueue.get()
-            else:
-                report = self.workers[0].run()
+                # Tell the workers to stop
+                for i in range(self.nWorker): self.commandQueue.put((i,'stop'))
 
-            if report['action'] == 'run':
-                for var in report:
-                    if var=='reachID': continue
-                    updateDiagnOutput(var,report[var])
-                writeDiagnOuput(report['reachID'])
-
-            # Inform the reach object of the status. This will signal the catchment 
-            # object, which will  figure out which reaches can start next and add 
-            # those to the command queue
-            if report['status'] in [self.model.flagOk, self.model.flagSkipReach, self.model.flagSkipExist]:
-                reach = self.catchment[report['reachID']]
-                if reach.status == Reach.flagRunning:
-                    reach.status = Reach.flagRunDone
-                elif reach.status == Reach.flagCleaning:
-                    reach.status = Reach.flagDone
-
-            elif report['status'] == self.model.flagError:
-                 self.catchment[report['reachID']].status = Reach.flagError
+                # Wait for the workers to finish
+                time.sleep(4)
             
-            # If new reaches can start, add them to the command queue
-            for reach in self.catchment.canStartReaches:
-                reach.status = Reach.flagRunning
-                self.commandQueue.put((self.priority[reach.ID],reach.unlink(),'run'))
-
-            for reach in self.catchment.canBeCleanedReaches:
-                reach.status = Reach.flagCleaning
-                self.commandQueue.put((self.priority[reach.ID],reach.unlink(),'cleanup'))
-
-        if self.parallel:
-            # Tell the workers to stop
-            for i in range(self.nWorker): self.commandQueue.put((i,'stop'))
-
-            # Wait for the workers to finish
-            time.sleep(4)
-        
-            # terminate the processes
-            for worker in self.workers:
-                worker.terminate()
+                # terminate the processes
+                for worker in self.workers:
+                    worker.terminate()
     
 class Worker:
     """

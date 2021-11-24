@@ -11,6 +11,7 @@ class CascadeToxswa(base.Component):
     """A component that encapsulates the CascadeToxswa module for usage within the Landscape Model."""
     # RELEASES
     VERSION = base.VersionCollection(
+        base.VersionInfo("2.2.0", "2021-11-24"),
         base.VersionInfo("2.1.6", "2021-11-18"),
         base.VersionInfo("2.1.5", "2021-10-12"),
         base.VersionInfo("2.1.4", "2021-10-11"),
@@ -99,6 +100,7 @@ class CascadeToxswa(base.Component):
     VERSION.changed("2.1.5", "Switched to Google docstring style")
     VERSION.changed("2.1.6", "Removed reach inputs and output")
     VERSION.changed("2.1.6", "Reports element names of outputs")
+    VERSION.changed("2.2.0", "Updated module to version 0.5-211124")
 
     def __init__(self, name, observer, store):
         """
@@ -110,7 +112,7 @@ class CascadeToxswa(base.Component):
             store: The data store used by the component.
         """
         super(CascadeToxswa, self).__init__(name, observer, store)
-        self._module = base.Module("CMF-TOXWA_coupling", "0.5", "https://doi.org/10.18174/547183")
+        self._module = base.Module("CMF-TOXWA_coupling", "0.5-211124", "https://doi.org/10.18174/547183")
         self._inputs = base.InputContainer(self, [
             base.Input(
                 "ProcessingPath",
