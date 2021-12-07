@@ -125,7 +125,7 @@ class CascadeToxswa(base.Component):
                 "SuspendedSolids",
                 (attrib.Class(float, 1), attrib.Unit("g/m³", 1), attrib.Scales("global", 1)),
                 self.default_observer,
-                description="The density of suspended solids that applies to all reaches."
+                description="The density of suspended solids of all reaches."
             ),
             base.Input(
                 "TimeSeriesStart",
