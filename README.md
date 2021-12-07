@@ -17,15 +17,15 @@
 ## About the project
 A component that encapsulates the CascadeToxswa module for usage within the Landscape Model.  
 This is an automatically generated documentation based on the available code and in-line documentation. The current
-version of this document is from 2021-11-24.  
+version of this document is from 2021-12-07.  
 
 ### Built with
-* Landscape Model core version 1.10
+* Landscape Model core version 1.10.3
 * CMF-TOXWA_coupling version 0.5-211124 (see `https://doi.org/10.18174/547183` for details)
 
 
 ## Getting Started
-The component can be used in any Landscape Model based on core version 1.10 or newer. See the Landscape
+The component can be used in any Landscape Model based on core version 1.10.3 or newer. See the Landscape
 Model core's `README` for general tips on how to add a component to a Landscape Model.
 
 ### Prerequisites
@@ -176,7 +176,7 @@ Values of the `ProcessingPath` input may not have a physical unit.
 Values have to refer to the `global` scale.
 
 #### SuspendedSolids
-The density of suspended solids that applies to all reaches.  
+The density of suspended solids of all reaches.  
 `SuspendedSolids` expects its values to be of type `float`.
 The physical unit of the `SuspendedSolids` input values is `g/m³`.
 Values have to refer to the `global` scale.
