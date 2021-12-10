@@ -11,6 +11,7 @@ class CascadeToxswa(base.Component):
     """A component that encapsulates the CascadeToxswa module for usage within the Landscape Model."""
     # RELEASES
     VERSION = base.VersionCollection(
+        base.VersionInfo("2.2.2", "2021-12-10"),
         base.VersionInfo("2.2.1", "2021-12-07"),
         base.VersionInfo("2.2.0", "2021-11-24"),
         base.VersionInfo("2.1.6", "2021-11-18"),
@@ -103,6 +104,7 @@ class CascadeToxswa(base.Component):
     VERSION.changed("2.1.6", "Reports element names of outputs")
     VERSION.changed("2.2.0", "Updated module to version 0.5-211124")
     VERSION.changed("2.2.1", "Spell checking")
+    VERSION.changed("2.2.2", "Specifies offset of outputs")
 
     def __init__(self, name, observer, store):
         """
@@ -636,23 +638,27 @@ class CascadeToxswa(base.Component):
         """
         deposition_info = self.inputs["MassLoadingSprayDrift"].read()
         number_time_steps = self.inputs["WaterDischarge"].describe()["shape"][0]
+        time_series_start = self.inputs["TimeSeriesStart"].read().values
         self.outputs["ConLiqWatTgtAvg"].set_values(
             np.ndarray,
             shape=(number_time_steps, deposition_info.values.shape[1]),
             chunks=(min(65536, number_time_steps), 1),
-            element_names=(None, deposition_info.element_names[1])
+            element_names=(None, deposition_info.element_names[1]),
+            offset=(time_series_start, None)
         )
         self.outputs["ConLiqWatTgtAvgHrAvg"].set_values(
             np.ndarray,
             shape=(number_time_steps, deposition_info.values.shape[1]),
             chunks=(min(65536, number_time_steps), 1),
-            element_names=(None, deposition_info.element_names[1])
+            element_names=(None, deposition_info.element_names[1]),
+            offset=(time_series_start, None)
         )
         self.outputs["CntSedTgt1"].set_values(
             np.ndarray,
             shape=(number_time_steps, deposition_info.values.shape[1]),
             chunks=(min(65536, number_time_steps), 1),
-            element_names=(None, deposition_info.element_names[1])
+            element_names=(None, deposition_info.element_names[1]),
+            offset=(time_series_start, None)
         )
         for i, reach in enumerate(deposition_info.element_names[1].get_values()):
             water_concentration = np.zeros(number_time_steps)
