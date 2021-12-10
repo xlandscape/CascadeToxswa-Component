@@ -636,23 +636,27 @@ class CascadeToxswa(base.Component):
         """
         deposition_info = self.inputs["MassLoadingSprayDrift"].read()
         number_time_steps = self.inputs["WaterDischarge"].describe()["shape"][0]
+        time_series_start = self.inputs["TimeSeriesStart"].read().values
         self.outputs["ConLiqWatTgtAvg"].set_values(
             np.ndarray,
             shape=(number_time_steps, deposition_info.values.shape[1]),
             chunks=(min(65536, number_time_steps), 1),
-            element_names=(None, deposition_info.element_names[1])
+            element_names=(None, deposition_info.element_names[1]),
+            offset=(time_series_start, None)
         )
         self.outputs["ConLiqWatTgtAvgHrAvg"].set_values(
             np.ndarray,
             shape=(number_time_steps, deposition_info.values.shape[1]),
             chunks=(min(65536, number_time_steps), 1),
-            element_names=(None, deposition_info.element_names[1])
+            element_names=(None, deposition_info.element_names[1]),
+            offset=(time_series_start, None)
         )
         self.outputs["CntSedTgt1"].set_values(
             np.ndarray,
             shape=(number_time_steps, deposition_info.values.shape[1]),
             chunks=(min(65536, number_time_steps), 1),
-            element_names=(None, deposition_info.element_names[1])
+            element_names=(None, deposition_info.element_names[1]),
+            offset=(time_series_start, None)
         )
         for i, reach in enumerate(deposition_info.element_names[1].get_values()):
             water_concentration = np.zeros(number_time_steps)
