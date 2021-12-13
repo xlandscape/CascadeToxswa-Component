@@ -116,7 +116,7 @@ class CascadeToxswa(base.Component):
             store: The data store used by the component.
         """
         super(CascadeToxswa, self).__init__(name, observer, store)
-        self._module = base.Module("CMF-TOXWA_coupling", "0.5-211124", "https://doi.org/10.18174/547183")
+        self._module = base.Module("CMF-TOXWA_coupling", "0.5-211213", "https://doi.org/10.18174/547183")
         self._inputs = base.InputContainer(self, [
             base.Input(
                 "ProcessingPath",
