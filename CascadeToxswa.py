@@ -516,8 +516,12 @@ class CascadeToxswa(base.Component):
         Returns:
             Nothing.
         """
-        temperature = self.inputs["Temperature"].read().values
         time_series_start = self.inputs["TimeSeriesStart"].read().values.date()
+        end_date_sim = (
+                time_series_start + datetime.timedelta(self.inputs["MassLoadingSprayDrift"].describe()["shape"][0]))
+        temperature = self.inputs["Temperature"].read(
+            select={"time/day": {"from": time_series_start, "to": end_date_sim}}).values
+
         with open(output_file, "w") as f:
             f.write("Time,TemAir\n-,C\n")
             for i in range(len(temperature)):
