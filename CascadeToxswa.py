@@ -11,6 +11,7 @@ class CascadeToxswa(base.Component):
     """A component that encapsulates the CascadeToxswa module for usage within the Landscape Model."""
     # RELEASES
     VERSION = base.VersionCollection(
+        base.VersionInfo("2.3.1", "2022-03-08"),
         base.VersionInfo("2.3.0", "2021-12-13"),
         base.VersionInfo("2.2.2", "2021-12-10"),
         base.VersionInfo("2.2.1", "2021-12-07"),
@@ -107,6 +108,7 @@ class CascadeToxswa(base.Component):
     VERSION.changed("2.2.1", "Spell checking")
     VERSION.changed("2.2.2", "Specifies offset of outputs")
     VERSION.changed("2.3.0", "Updated module to version 0.5-211213")
+    VERSION.changed("2.3.1", "Usage of native coordinates for temperature timeseries input")
 
     def __init__(self, name, observer, store):
         """
@@ -516,8 +518,12 @@ class CascadeToxswa(base.Component):
         Returns:
             Nothing.
         """
-        temperature = self.inputs["Temperature"].read().values
         time_series_start = self.inputs["TimeSeriesStart"].read().values.date()
+        end_date_sim = (
+                time_series_start + datetime.timedelta(self.inputs["MassLoadingSprayDrift"].describe()["shape"][0]))
+        temperature = self.inputs["Temperature"].read(
+            select={"time/day": {"from": time_series_start, "to": end_date_sim}}).values
+
         with open(output_file, "w") as f:
             f.write("Time,TemAir\n-,C\n")
             for i in range(len(temperature)):

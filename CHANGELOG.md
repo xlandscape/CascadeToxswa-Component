@@ -1,5 +1,15 @@
 # Changelog
-This is the changelog for the CascadeToxswa component. It was automatically created on 2021-12-13.
+This is the changelog for the CascadeToxswa component. It was automatically created on 2022-03-08.
+
+## [2.3.1] - 2022-03-08
+
+### Added
+
+### Changed
+- Usage of native coordinates for temperature timeseries input
+
+### Fixed
+
 
 ## [2.3] - 2021-12-13
 
