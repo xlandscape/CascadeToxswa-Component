@@ -669,9 +669,9 @@ class CascadeToxswa(base.Component):
             offset=(time_series_start, None)
         )
         for i, reach in enumerate(deposition_info.element_names[1].get_values()):
-            water_concentration = np.zeros(number_time_steps)
-            water_concentration_hr = np.zeros(number_time_steps)
-            sediment_concentration = np.zeros(number_time_steps)
+            water_concentration = np.zeros((number_time_steps, 1))
+            water_concentration_hr = np.zeros((number_time_steps, 1))
+            sediment_concentration = np.zeros((number_time_steps, 1))
             with open(os.path.join(output_path, f"R{reach}.csv")) as f:
                 f.readline()
                 for t in range(number_time_steps):
@@ -680,8 +680,8 @@ class CascadeToxswa(base.Component):
                     water_concentration_hr[t] = float(fields[3])
                     sediment_concentration[t] = float(fields[4])
             self.outputs["ConLiqWatTgtAvg"].set_values(
-                water_concentration, slices=(slice(number_time_steps), i), create=False)
+                water_concentration, slices=(slice(number_time_steps), slice(i, i + 1)), create=False)
             self.outputs["ConLiqWatTgtAvgHrAvg"].set_values(
-                water_concentration_hr, slices=(slice(number_time_steps), i), create=False)
+                water_concentration_hr, slices=(slice(number_time_steps), slice(i, i + 1)), create=False)
             self.outputs["CntSedTgt1"].set_values(
-                sediment_concentration, slices=(slice(number_time_steps), i), create=False)
+                sediment_concentration, slices=(slice(number_time_steps), slice(i, i + 1)), create=False)
