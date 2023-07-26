@@ -11,6 +11,7 @@ class CascadeToxswa(base.Component):
     """A component that encapsulates the CascadeToxswa module for usage within the Landscape Model."""
     # RELEASES
     VERSION = base.VersionCollection(
+        base.VersionInfo("2.3.2", "2023-07-26"),
         base.VersionInfo("2.3.1", "2022-03-08"),
         base.VersionInfo("2.3.0", "2021-12-13"),
         base.VersionInfo("2.2.2", "2021-12-10"),
@@ -109,6 +110,7 @@ class CascadeToxswa(base.Component):
     VERSION.changed("2.2.2", "Specifies offset of outputs")
     VERSION.changed("2.3.0", "Updated module to version 0.5-211213")
     VERSION.changed("2.3.1", "Usage of native coordinates for temperature timeseries input")
+    VERSION.fixed("2.3.2", "Dimensionality of outputs")
 
     def __init__(self, name, observer, store):
         """
@@ -669,9 +671,9 @@ class CascadeToxswa(base.Component):
             offset=(time_series_start, None)
         )
         for i, reach in enumerate(deposition_info.element_names[1].get_values()):
-            water_concentration = np.zeros(number_time_steps)
-            water_concentration_hr = np.zeros(number_time_steps)
-            sediment_concentration = np.zeros(number_time_steps)
+            water_concentration = np.zeros((number_time_steps, 1))
+            water_concentration_hr = np.zeros((number_time_steps, 1))
+            sediment_concentration = np.zeros((number_time_steps, 1))
             with open(os.path.join(output_path, f"R{reach}.csv")) as f:
                 f.readline()
                 for t in range(number_time_steps):
@@ -680,8 +682,8 @@ class CascadeToxswa(base.Component):
                     water_concentration_hr[t] = float(fields[3])
                     sediment_concentration[t] = float(fields[4])
             self.outputs["ConLiqWatTgtAvg"].set_values(
-                water_concentration, slices=(slice(number_time_steps), i), create=False)
+                water_concentration, slices=(slice(number_time_steps), slice(i, i + 1)), create=False)
             self.outputs["ConLiqWatTgtAvgHrAvg"].set_values(
-                water_concentration_hr, slices=(slice(number_time_steps), i), create=False)
+                water_concentration_hr, slices=(slice(number_time_steps), slice(i, i + 1)), create=False)
             self.outputs["CntSedTgt1"].set_values(
-                sediment_concentration, slices=(slice(number_time_steps), i), create=False)
+                sediment_concentration, slices=(slice(number_time_steps), slice(i, i + 1)), create=False)
