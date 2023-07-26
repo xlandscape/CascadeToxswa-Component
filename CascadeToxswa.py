@@ -11,6 +11,7 @@ class CascadeToxswa(base.Component):
     """A component that encapsulates the CascadeToxswa module for usage within the Landscape Model."""
     # RELEASES
     VERSION = base.VersionCollection(
+        base.VersionInfo("2.3.2", "2023-07-26"),
         base.VersionInfo("2.3.1", "2022-03-08"),
         base.VersionInfo("2.3.0", "2021-12-13"),
         base.VersionInfo("2.2.2", "2021-12-10"),
@@ -109,6 +110,7 @@ class CascadeToxswa(base.Component):
     VERSION.changed("2.2.2", "Specifies offset of outputs")
     VERSION.changed("2.3.0", "Updated module to version 0.5-211213")
     VERSION.changed("2.3.1", "Usage of native coordinates for temperature timeseries input")
+    VERSION.fixed("2.3.2", "Dimensionality of outputs")
 
     def __init__(self, name, observer, store):
         """
