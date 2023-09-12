@@ -1,6 +1,24 @@
 # Changelog
 
-This is the changelog for the CascadeToxswa component. It was automatically created on 2023-09-11.
+This is the changelog for the CascadeToxswa component. It was automatically created on 2023-09-12.
+
+## [2.3.4] - 2023-09-12
+
+### Added
+
+- Creation of repository info during documentation
+
+- Repository info, changelog, contributing note and license to module
+
+- Repository info to TOXSWA
+
+- Repository info to Python runtime environment
+
+### Changed
+
+- Extended module information
+
+### Fixed
 
 ## [2.3.3] - 2023-09-11
 
