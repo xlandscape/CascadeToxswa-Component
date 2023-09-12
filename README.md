@@ -18,16 +18,16 @@
 
 A component that encapsulates the CascadeToxswa module for usage within the Landscape Model.  
 This is an automatically generated documentation based on the available code and in-line documentation. The current
-version of this document is from 2023-09-11.
+version of this document is from 2023-09-12.
 
 ### Built with
 
-* Landscape Model core version 1.15
-* CMF-TOXWA_coupling version 0.5-211213 (see `https://doi.org/10.18174/547183` for details)
+* Landscape Model core version 1.15.2
+* CMF-TOXWA_coupling version 0.5-211213 
 
 ## Getting Started
 
-The component can be used in any Landscape Model based on core version 1.15 or newer. See the Landscape
+The component can be used in any Landscape Model based on core version 1.15.2 or newer. See the Landscape
 Model core's `README` for general tips on how to add a component to a Landscape Model.
 
 ### Prerequisites

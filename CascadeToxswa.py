@@ -11,6 +11,7 @@ class CascadeToxswa(base.Component):
     """A component that encapsulates the CascadeToxswa module for usage within the Landscape Model."""
     # RELEASES
     VERSION = base.VersionCollection(
+        base.VersionInfo("2.3.4", "2023-09-12"),
         base.VersionInfo("2.3.3", "2023-09-11"),
         base.VersionInfo("2.3.2", "2023-07-26"),
         base.VersionInfo("2.3.1", "2022-03-08"),
@@ -113,6 +114,11 @@ class CascadeToxswa(base.Component):
     VERSION.changed("2.3.1", "Usage of native coordinates for temperature timeseries input")
     VERSION.fixed("2.3.2", "Dimensionality of outputs")
     VERSION.added("2.3.3", "Information on runtime environment")
+    VERSION.added("2.3.4", "Creation of repository info during documentation")
+    VERSION.changed("2.3.4", "Extended module information")
+    VERSION.added("2.3.4", "Repository info, changelog, contributing note and license to module")
+    VERSION.added("2.3.4", "Repository info to TOXSWA")
+    VERSION.added("2.3.4", "Repository info to Python runtime environment")
 
     def __init__(self, name, observer, store):
         """
@@ -128,13 +134,23 @@ class CascadeToxswa(base.Component):
             "CMF-TOXWA_coupling",
             "0.5-211213",
             "module",
-            "https://doi.org/10.18174/547183",
+            None,
             base.Module(
                 "Python",
                 "3.7.6",
                 "module/WPy64-3760",
-                "module/WPy64-3760/python-3.7.6.amd64/NEWS.txt",
-                base.Module("TOXSWA", "<unknown>", "module/TOXSWA", None, None)
+                "module/WPy64-3760/python-3.7.6.amd64/Doc/python376.chm",
+                base.Module(
+                    "TOXSWA",
+                    "3.3.8",
+                    "module/TOXSWA",
+                    "https://esdac.jrc.ec.europa.eu/projects/toxswa",
+                    None,
+                    True,
+                    "https://esdac.jrc.ec.europa.eu/projects/toxswa"
+                ),
+                True,
+                "module/WPy64-3760/python-3.7.6.amd64/NEWS.txt"
             )
         )
         self._inputs = base.InputContainer(self, [
