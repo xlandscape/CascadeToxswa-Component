@@ -18,16 +18,16 @@
 
 A component that encapsulates the CascadeToxswa module for usage within the Landscape Model.  
 This is an automatically generated documentation based on the available code and in-line documentation. The current
-version of this document is from 2023-09-12.
+version of this document is from 2023-09-13.
 
 ### Built with
 
-* Landscape Model core version 1.15.2
+* Landscape Model core version 1.15.3
 * CMF-TOXWA_coupling version 0.5-211213 
 
 ## Getting Started
 
-The component can be used in any Landscape Model based on core version 1.15.2 or newer. See the Landscape
+The component can be used in any Landscape Model based on core version 1.15.3 or newer. See the Landscape
 Model core's `README` for general tips on how to add a component to a Landscape Model.
 
 ### Prerequisites
@@ -447,7 +447,7 @@ Dimension 1 spans the number of time steps as given by the [WaterDischarge](#Wat
 Dimension 2 spans the number of reaches as given by the `Reaches` input.
 Chunking of the array is for fast retrieval of time series.
 Individual array elements have a type of `float`.
-The values apply to the following scale: `time/hour, space/base_geometry`.
+The values apply to the following scale: `time/hour, space/reach`.
 The physical unit of the values is `g/m³`.
 #### ConLiqWatTgtAvgHrAvg
 The time weighted average of concentration in the water phase averaged for a reach.  
@@ -457,7 +457,7 @@ Dimension 1 spans the number of time steps as given by the [WaterDischarge](#Wat
 Dimension 2 spans the number of reaches as given by the `Reaches` input.
 Chunking of the array is for fast retrieval of time series.
 Individual array elements have a type of `float`.
-The values apply to the following scale: `time/hour, space/base_geometry`.
+The values apply to the following scale: `time/hour, space/reach`.
 The physical unit of the values is `g/m³`.
 #### CntSedTgt1
 The total content in target layer 1 of sediment atb the specified time.  
@@ -467,7 +467,7 @@ Dimension 1 spans the number of time steps as given by the [WaterDischarge](#Wat
 Dimension 2 spans the number of reaches as given by the `Reaches` input.
 Chunking of the array is for fast retrieval of time series.
 Individual array elements have a type of `float`.
-The values apply to the following scale: `time/hour, space/base_geometry`.
+The values apply to the following scale: `time/hour, space/reach`.
 The physical unit of the values is `g/kg`.
 
 ## Roadmap
