@@ -405,7 +405,7 @@ class CascadeToxswa(base.Component):
                     "ConLiqWatTgtAvg",
                     store,
                     self,
-                    {"data_type": np.float, "scales": "time/hour, space/base_geometry", "unit": "g/m³"},
+                    {"data_type": np.float, "scales": "time/hour, space/reach", "unit": "g/m³"},
                     "The average concentration along the reach at the specified moment in time in the water phase.",
                     {
                         "type": np.ndarray,
@@ -420,7 +420,7 @@ class CascadeToxswa(base.Component):
                     "ConLiqWatTgtAvgHrAvg",
                     store,
                     self,
-                    {"data_type": np.float, "scales": "time/hour, space/base_geometry", "unit": "g/m³"},
+                    {"data_type": np.float, "scales": "time/hour, space/reach", "unit": "g/m³"},
                     "The time weighted average of concentration in the water phase averaged for a reach.",
                     {
                         "type": np.ndarray,
@@ -435,7 +435,7 @@ class CascadeToxswa(base.Component):
                     "CntSedTgt1",
                     store,
                     self,
-                    {"data_type": np.float, "scales": "time/hour, space/base_geometry", "unit": "g/kg"},
+                    {"data_type": np.float, "scales": "time/hour, space/reach", "unit": "g/kg"},
                     "The total content in target layer 1 of sediment atb the specified time.",
                     {
                         "type": np.ndarray,
