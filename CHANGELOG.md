@@ -1,6 +1,16 @@
 # Changelog
 
-This is the changelog for the CascadeToxswa component. It was automatically created on 2023-09-12.
+This is the changelog for the CascadeToxswa component. It was automatically created on 2023-09-13.
+
+## [2.3.5] - 2023-09-13
+
+### Added
+
+### Changed
+
+### Fixed
+
+- Spatial scales of outputs
 
 ## [2.3.4] - 2023-09-12
 
