@@ -18,16 +18,16 @@
 
 A component that encapsulates the CascadeToxswa module for usage within the Landscape Model.  
 This is an automatically generated documentation based on the available code and in-line documentation. The current
-version of this document is from 2023-09-13.
+version of this document is from 2023-09-18.
 
 ### Built with
 
-* Landscape Model core version 1.15.3
+* Landscape Model core version 1.15.5
 * CMF-TOXWA_coupling version 0.5-211213 
 
 ## Getting Started
 
-The component can be used in any Landscape Model based on core version 1.15.3 or newer. See the Landscape
+The component can be used in any Landscape Model based on core version 1.15.5 or newer. See the Landscape
 Model core's `README` for general tips on how to add a component to a Landscape Model.
 
 ### Prerequisites
@@ -183,7 +183,6 @@ Values have to refer to the `global` scale.
 
 #### SuspendedSolids
 
-The density of suspended solids of all reaches.
 `SuspendedSolids` expects its values to be of type `float`.
 The physical unit of the `SuspendedSolids` input values is `g/m³`.
 Values have to refer to the `global` scale.
@@ -191,21 +190,19 @@ Values have to refer to the `global` scale.
 #### TimeSeriesStart
 
 The first time step for which input data is provided. This is also the time step of where the CascadeToxswa simulation
-starts.
+starts. This input will be removed in a future version of the `CascadeToxswa` component.
 `TimeSeriesStart` expects its values to be of type `date`.
 Values of the `TimeSeriesStart` input may not have a physical unit.
 Values have to refer to the `global` scale.
 
 #### WaterDischarge
 
-The amount of water that leaves a reach within a time step.
 `WaterDischarge` expects its values to be of type `ndarray`.
 The physical unit of the `WaterDischarge` input values is `m³/s`.
 Values have to refer to the `time/hour, space/reach` scale.
 
 #### WaterDepth
 
-The depth of the water body measured from the surface to the lowest point of the  cross-section profile.
 `WaterDepth` expects its values to be of type `ndarray`.
 The physical unit of the `WaterDepth` input values is `m`.
 Values have to refer to the `time/hour, space/reach` scale.
@@ -221,161 +218,138 @@ Values have to refer to the `time/day` scale.
 
 #### MassLoadingSprayDrift
 
-The average drift deposition onto the surface of a water body.
 `MassLoadingSprayDrift` expects its values to be of type `ndarray`.
 The physical unit of the `MassLoadingSprayDrift` input values is `mg/m²`.
 Values have to refer to the `time/day, space/reach` scale.
 
 #### MolarMass
 
-The molar mass of the substance depositing at the water body surface.
 `MolarMass` expects its values to be of type `float`.
 The physical unit of the `MolarMass` input values is `g/mol`.
 Values have to refer to the `global` scale.
 
 #### SaturatedVapourPressure
 
-The saturated vapor pressure of the substance depositing at the water body surface.
 `SaturatedVapourPressure` expects its values to be of type `float`.
 The physical unit of the `SaturatedVapourPressure` input values is `Pa`.
 Values have to refer to the `global` scale.
 
 #### ReferenceTemperatureForSaturatedVapourPressure
 
-The temperature to which the value of the `SaturatedVaporPressure` applies.
 `ReferenceTemperatureForSaturatedVapourPressure` expects its values to be of type `float`.
 The physical unit of the `ReferenceTemperatureForSaturatedVapourPressure` input values is `°C`.
 Values have to refer to the `global` scale.
 
 #### MolarEnthalpyOfVaporization
 
-The molar vaporization enthalpy of the substance depositing at the water body surface.
 `MolarEnthalpyOfVaporization` expects its values to be of type `float`.
 The physical unit of the `MolarEnthalpyOfVaporization` input values is `kJ/mol`.
 Values have to refer to the `global` scale.
 
 #### SolubilityInWater
 
-The water solubility of the substance depositing at the water body surface.
 `SolubilityInWater` expects its values to be of type `float`.
 The physical unit of the `SolubilityInWater` input values is `mg/l`.
 Values have to refer to the `global` scale.
 
 #### ReferenceTemperatureForWaterSolubility
 
-The temperature to which the value of the `SolubilityInWater` applies.
 `ReferenceTemperatureForWaterSolubility` expects its values to be of type `float`.
 The physical unit of the `ReferenceTemperatureForWaterSolubility` input values is `°C`.
 Values have to refer to the `global` scale.
 
 #### MolarEnthalpyOfDissolution
 
-The molar dissolution enthalpy of the substance depositing at the water body surface.
 `MolarEnthalpyOfDissolution` expects its values to be of type `float`.
 The physical unit of the `MolarEnthalpyOfDissolution` input values is `kJ/mol`.
 Values have to refer to the `global` scale.
 
 #### DiffusionCoefficient
 
-The diffusion coefficient of the substance depositing at the water body surface.
 `DiffusionCoefficient` expects its values to be of type `float`.
 The physical unit of the `DiffusionCoefficient` input values is `m²/d`.
 Values have to refer to the `global` scale.
 
 #### ReferenceTemperatureForDiffusion
 
-The temperature to which the value of the `DiffusionCoefficient` applies.
 `ReferenceTemperatureForDiffusion` expects its values to be of type `float`.
 The physical unit of the `ReferenceTemperatureForDiffusion` input values is `°C`.
 Values have to refer to the `global` scale.
 
 #### HalfLifeTransformationInWater
 
-The half-life transformation time in water of the substance depositing at the water body  surface.
 `HalfLifeTransformationInWater` expects its values to be of type `float`.
 The physical unit of the `HalfLifeTransformationInWater` input values is `d`.
 Values have to refer to the `global` scale.
 
 #### TemperatureAtWhichHalfLifeInWaterWasMeasured
 
-The temperature to which the value of the `HalfLifeTransformationInWater` applies.
 `TemperatureAtWhichHalfLifeInWaterWasMeasured` expects its values to be of type `float`.
 The physical unit of the `TemperatureAtWhichHalfLifeInWaterWasMeasured` input values is `°C`.
 Values have to refer to the `global` scale.
 
 #### MolarActivationEnthalpyOfTransformationInWater
 
-The molar activation enthalpy relating to the transformation in water.
 `MolarActivationEnthalpyOfTransformationInWater` expects its values to be of type `float`.
 The physical unit of the `MolarActivationEnthalpyOfTransformationInWater` input values is `kJ/mol`.
 Values have to refer to the `global` scale.
 
 #### HalfLifeTransformationInSediment
 
-The half-life transformation time in sediment of the substance depositing at the water  body surface.
 `HalfLifeTransformationInSediment` expects its values to be of type `float`.
 The physical unit of the `HalfLifeTransformationInSediment` input values is `d`.
 Values have to refer to the `global` scale.
 
 #### TemperatureAtWhichHalfLifeInSedimentWasMeasured
 
-The temperature to which the value of the `HalfLifeTransformationInSediment` applies.
 `TemperatureAtWhichHalfLifeInSedimentWasMeasured` expects its values to be of type `float`.
 The physical unit of the `TemperatureAtWhichHalfLifeInSedimentWasMeasured` input values is `°C`.
 Values have to refer to the `global` scale.
 
 #### MolarActivationEnthalpyOfTransformationInSediment
 
-The molar activation enthalpy relating to the transformation in sediment.
 `MolarActivationEnthalpyOfTransformationInSediment` expects its values to be of type `float`.
 The physical unit of the `MolarActivationEnthalpyOfTransformationInSediment` input values is `kJ/mol`.
 Values have to refer to the `global` scale.
 
 #### CoefficientForEquilibriumAdsorptionInSediment
 
-The coefficient for equilibrium adsorption in sediment of the substance depositing at  the water body surface.
 `CoefficientForEquilibriumAdsorptionInSediment` expects its values to be of type `float`.
 The physical unit of the `CoefficientForEquilibriumAdsorptionInSediment` input values is `l/kg`.
 Values have to refer to the `global` scale.
 
 #### ReferenceConcentrationInLiquidPhaseInSediment
 
-The reference concentration of the deposited substance in the liquid phase of the  sediment .
 `ReferenceConcentrationInLiquidPhaseInSediment` expects its values to be of type `float`.
 The physical unit of the `ReferenceConcentrationInLiquidPhaseInSediment` input values is `mg/l`.
 Values have to refer to the `global` scale.
 
 #### FreundlichExponentInSediment
 
-The Freundlich exponent in sediment of the substance depositing at the water body  surface.
 `FreundlichExponentInSediment` expects its values to be of type `float`.
 The physical unit of the `FreundlichExponentInSediment` input values is `1`.
 Values have to refer to the `global` scale.
 
 #### CoefficientForEquilibriumAdsorptionOfSuspendedSoils
 
-The coefficient for equilibrium adsorption of suspended soils.
 `CoefficientForEquilibriumAdsorptionOfSuspendedSoils` expects its values to be of type `float`.
 The physical unit of the `CoefficientForEquilibriumAdsorptionOfSuspendedSoils` input values is `l/kg`.
 Values have to refer to the `global` scale.
 
 #### ReferenceConcentrationForSuspendedSoils
 
-The reference concentration for suspended soils.
 `ReferenceConcentrationForSuspendedSoils` expects its values to be of type `float`.
 The physical unit of the `ReferenceConcentrationForSuspendedSoils` input values is `mg/l`.
 Values have to refer to the `global` scale.
 
 #### FreundlichExponentForSuspendedSoils
 
-The Freundlich exponent for suspended particles.
 `FreundlichExponentForSuspendedSoils` expects its values to be of type `float`.
 The physical unit of the `FreundlichExponentForSuspendedSoils` input values is `1`.
 Values have to refer to the `global` scale.
 
 #### CoefficientForLinearAdsorptionOnMacrophytes
 
-The coefficient for the linear adsorption of the substance on macrophytes.
 `CoefficientForLinearAdsorptionOnMacrophytes` expects its values to be of type `float`.
 The physical unit of the `CoefficientForLinearAdsorptionOnMacrophytes` input values is `l/kg`.
 Values have to refer to the `global` scale.
@@ -383,60 +357,55 @@ Values have to refer to the `global` scale.
 #### NumberWorkers
 
 The number of individual worker processes for the CascadeToxswa simulation. Higher values usually result in a faster
-processing, but performance will drop if the available processors are  overloaded with workers. Consider for an optimal
-value also other processes running on the same  machine, especially other Monte Carlo runs of the Landscape Model.
+processing, but performance will drop if the available processors are overloaded with workers. Consider, for an optimal
+value, also other processes running on the same machine, especially other Monte Carlo runs of the Landscape Model.
 `NumberWorkers` expects its values to be of type `int`.
 Values of the `NumberWorkers` input may not have a physical unit.
 Values have to refer to the `global` scale.
 
 #### HydrographyGeometries
 
-The geometries of individual water body segments (reaches) in WKB representation.
+The geometries of individual water body segments (reaches) in WKB representation. This input will be removed in a future
+version of the `CascadeToxswa` component.
 `HydrographyGeometries` expects its values to be of type `list`.
 Values of the `HydrographyGeometries` input may not have a physical unit.
-Values have to refer to the `space/base_geometry` scale.
+Values have to refer to the `space/reach` scale.
 
 #### DownstreamReach
 
-The identifier of the reach that is located downstream of the current reach.
 `DownstreamReach` expects its values to be of type `list`.
 Values of the `DownstreamReach` input may not have a physical unit.
-Values have to refer to the `space/base_geometry` scale.
+Values have to refer to the `space/reach` scale.
 
 #### BottomWidth
 
-The width of the reach at its bottom.
 `BottomWidth` expects its values to be of type `list`.
 The physical unit of the `BottomWidth` input values is `m`.
-Values have to refer to the `space/base_geometry` scale.
+Values have to refer to the `space/reach` scale.
 
 #### BankSlope
 
-The slope of the reach.
 `BankSlope` expects its values to be of type `list`.
 The physical unit of the `BankSlope` input values is `1`.
-Values have to refer to the `space/base_geometry` scale.
+Values have to refer to the `space/reach` scale.
 
 #### OrganicContent
 
-The amount of organic material in the sediment of the reach.
 `OrganicContent` expects its values to be of type `list`.
 The physical unit of the `OrganicContent` input values is `g/g`.
-Values have to refer to the `space/base_geometry` scale.
+Values have to refer to the `space/reach` scale.
 
 #### BulkDensity
 
-The mass density of the reach sediment.
 `BulkDensity` expects its values to be of type `list`.
 The physical unit of the `BulkDensity` input values is `kg/m³`.
-Values have to refer to the `space/base_geometry` scale.
+Values have to refer to the `space/reach` scale.
 
 #### Porosity
 
-The porosity of the reach sediment.
 `Porosity` expects its values to be of type `list`.
 The physical unit of the `Porosity` input values is `m³/m³`.
-Values have to refer to the `space/base_geometry` scale.
+Values have to refer to the `space/reach` scale.
 
 ### Outputs
 #### ConLiqWatTgtAvg

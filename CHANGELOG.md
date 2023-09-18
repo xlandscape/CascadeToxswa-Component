@@ -1,6 +1,20 @@
 # Changelog
 
-This is the changelog for the CascadeToxswa component. It was automatically created on 2023-09-13.
+This is the changelog for the CascadeToxswa component. It was automatically created on 2023-09-18.
+
+## [2.3.6] - 2023-09-18
+
+### Added
+
+- Runtime warnings and notes regarding component and documentation status
+
+### Changed
+
+- Relieved severity of input attribute deviations
+
+- Updated input descriptions and removed stub descriptions
+
+### Fixed
 
 ## [2.3.5] - 2023-09-13
 
