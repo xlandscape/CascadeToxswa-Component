@@ -18,16 +18,16 @@
 
 A component that encapsulates the CascadeToxswa module for usage within the Landscape Model.  
 This is an automatically generated documentation based on the available code and in-line documentation. The current
-version of this document is from 2023-09-18.
+version of this document is from 2023-09-20.
 
 ### Built with
 
-* Landscape Model core version 1.15.5
+* Landscape Model core version 1.15.8
 * CMF-TOXWA_coupling version 0.5-211213 
 
 ## Getting Started
 
-The component can be used in any Landscape Model based on core version 1.15.5 or newer. See the Landscape
+The component can be used in any Landscape Model based on core version 1.15.8 or newer. See the Landscape
 Model core's `README` for general tips on how to add a component to a Landscape Model.
 
 ### Prerequisites
@@ -407,38 +407,41 @@ Values have to refer to the `space/reach` scale.
 The physical unit of the `Porosity` input values is `m³/m³`.
 Values have to refer to the `space/reach` scale.
 
+
 ### Outputs
 #### ConLiqWatTgtAvg
-The average concentration along the reach at the specified moment in time in the water phase.  
-Values are expectedly of type `ndarray`.
-Value representation is in a 2-dimensional array.
-Dimension 1 spans the number of time steps as given by the [WaterDischarge](#WaterDischarge) input.
-Dimension 2 spans the number of reaches as given by the `Reaches` input.
-Chunking of the array is for fast retrieval of time series.
-Individual array elements have a type of `float`.
-The values apply to the following scale: `time/hour, space/reach`.
-The physical unit of the values is `g/m³`.
+The average concentration along the reach at the specified moment in time in the water phase.
+- Data Type: `float`
+- Scales: `time/hour, space/reach`
+- Unit: `g/m³`
+- Type: `numpy.ndarray`
+- Shape: `time/hour`: the number of time steps as given by the [WaterDischarge](#WaterDischarge) input, `space/reach`: the number of reaches as given by the `Reaches` input
+- Chunks: for fast retrieval of time series
+- Element_Names: `time/hour`: None, `space/reach`: according to the `MassLoadingSprayDrift` input
+- Offset: `time/hour`: the value of the `TimeSeriesStart` input, `space/reach`: None
+- Geometries: `time/hour`: None, `space/reach`: according to the `MassLoadingSprayDrift` input
 #### ConLiqWatTgtAvgHrAvg
-The time weighted average of concentration in the water phase averaged for a reach.  
-Values are expectedly of type `ndarray`.
-Value representation is in a 2-dimensional array.
-Dimension 1 spans the number of time steps as given by the [WaterDischarge](#WaterDischarge) input.
-Dimension 2 spans the number of reaches as given by the `Reaches` input.
-Chunking of the array is for fast retrieval of time series.
-Individual array elements have a type of `float`.
-The values apply to the following scale: `time/hour, space/reach`.
-The physical unit of the values is `g/m³`.
+The time weighted average of concentration in the water phase averaged for a reach.
+- Data Type: `float`
+- Scales: `time/hour, space/reach`
+- Unit: `g/m³`
+- Type: `numpy.ndarray`
+- Shape: `time/hour`: the number of time steps as given by the [WaterDischarge](#WaterDischarge) input, `space/reach`: the number of reaches as given by the `Reaches` input
+- Chunks: for fast retrieval of time series
+- Element_Names: `time/hour`: None, `space/reach`: according to the `MassLoadingSprayDrift` input
+- Offset: `time/hour`: the value of the `TimeSeriesStart` input, `space/reach`: None
+- Geometries: `time/hour`: None, `space/reach`: according to the `MassLoadingSprayDrift` input
 #### CntSedTgt1
-The total content in target layer 1 of sediment atb the specified time.  
-Values are expectedly of type `ndarray`.
-Value representation is in a 2-dimensional array.
-Dimension 1 spans the number of time steps as given by the [WaterDischarge](#WaterDischarge) input.
-Dimension 2 spans the number of reaches as given by the `Reaches` input.
-Chunking of the array is for fast retrieval of time series.
-Individual array elements have a type of `float`.
-The values apply to the following scale: `time/hour, space/reach`.
-The physical unit of the values is `g/kg`.
-
+The total content in target layer 1 of sediment atb the specified time.
+- Data Type: `float`
+- Scales: `time/hour, space/reach`
+- Unit: `g/kg`
+- Type: `numpy.ndarray`
+- Shape: `time/hour`: the number of time steps as given by the [WaterDischarge](#WaterDischarge) input, `space/reach`: the number of reaches as given by the `Reaches` input
+- Chunks: for fast retrieval of time series
+- Element_Names: `time/hour`: None, `space/reach`: according to the `MassLoadingSprayDrift` input
+- Offset: `time/hour`: the value of the `TimeSeriesStart` input, `space/reach`: None
+- Geometries: `time/hour`: None, `space/reach`: according to the `MassLoadingSprayDrift` input
 ## Roadmap
 
 The `CascadeToxswa` component is stable. No further development takes place at the moment.
