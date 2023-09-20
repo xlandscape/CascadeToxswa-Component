@@ -1,6 +1,18 @@
 # Changelog
 
-This is the changelog for the CascadeToxswa component. It was automatically created on 2023-09-18.
+This is the changelog for the CascadeToxswa component. It was automatically created on 2023-09-20.
+
+## [2.3.7] - 2023-09-20
+
+### Added
+
+- Extended output descriptions
+
+- Outputs with scale space/reach report geometries
+
+### Changed
+
+### Fixed
 
 ## [2.3.6] - 2023-09-18
 
