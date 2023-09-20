@@ -376,7 +376,10 @@ class CascadeToxswa(base.Component):
                             "the number of time steps as given by the [WaterDischarge](#WaterDischarge) input",
                             "the number of reaches as given by the `Reaches` input"
                         ),
-                        "chunks": "for fast retrieval of time series"
+                        "chunks": "for fast retrieval of time series",
+                        "element_names": (None, "according to the `MassLoadingSprayDrift` input"),
+                        "offset": ("the value of the `TimeSeriesStart` input", None),
+                        "geometries": (None, "according to the `MassLoadingSprayDrift` input")
                     }
                 ),
                 base.Output(
@@ -391,7 +394,10 @@ class CascadeToxswa(base.Component):
                             "the number of time steps as given by the [WaterDischarge](#WaterDischarge) input",
                             "the number of reaches as given by the `Reaches` input"
                         ),
-                        "chunks": "for fast retrieval of time series"
+                        "chunks": "for fast retrieval of time series",
+                        "element_names": (None, "according to the `MassLoadingSprayDrift` input"),
+                        "offset": ("the value of the `TimeSeriesStart` input", None),
+                        "geometries": (None, "according to the `MassLoadingSprayDrift` input")
                     }
                 ),
                 base.Output(
@@ -406,7 +412,10 @@ class CascadeToxswa(base.Component):
                             "the number of time steps as given by the [WaterDischarge](#WaterDischarge) input",
                             "the number of reaches as given by the `Reaches` input"
                         ),
-                        "chunks": "for fast retrieval of time series"
+                        "chunks": "for fast retrieval of time series",
+                        "element_names": (None, "according to the `MassLoadingSprayDrift` input"),
+                        "offset": ("the value of the `TimeSeriesStart` input", None),
+                        "geometries": (None, "according to the `MassLoadingSprayDrift` input")
                     }
                 )
             )
@@ -664,21 +673,24 @@ class CascadeToxswa(base.Component):
             shape=(number_time_steps, deposition_info.values.shape[1]),
             chunks=(min(65536, number_time_steps), 1),
             element_names=(None, deposition_info.element_names[1]),
-            offset=(time_series_start, None)
+            offset=(time_series_start, None),
+            geometries=(None, deposition_info.geometries[1])
         )
         self.outputs["ConLiqWatTgtAvgHrAvg"].set_values(
             np.ndarray,
             shape=(number_time_steps, deposition_info.values.shape[1]),
             chunks=(min(65536, number_time_steps), 1),
             element_names=(None, deposition_info.element_names[1]),
-            offset=(time_series_start, None)
+            offset=(time_series_start, None),
+            geometries=(None, deposition_info.geometries[1])
         )
         self.outputs["CntSedTgt1"].set_values(
             np.ndarray,
             shape=(number_time_steps, deposition_info.values.shape[1]),
             chunks=(min(65536, number_time_steps), 1),
             element_names=(None, deposition_info.element_names[1]),
-            offset=(time_series_start, None)
+            offset=(time_series_start, None),
+            geometries=(None, deposition_info.geometries[1])
         )
         for i, reach in enumerate(deposition_info.element_names[1].get_values()):
             water_concentration = np.zeros((number_time_steps, 1))
