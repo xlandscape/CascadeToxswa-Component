@@ -11,6 +11,7 @@ class CascadeToxswa(base.Component):
     """A component that encapsulates the CascadeToxswa module for usage within the Landscape Model."""
     # RELEASES
     VERSION = base.VersionCollection(
+        base.VersionInfo("2.3.7", "2023-09-20"),
         base.VersionInfo("2.3.6", "2023-09-18"),
         base.VersionInfo("2.3.5", "2023-09-13"),
         base.VersionInfo("2.3.4", "2023-09-12"),
@@ -125,6 +126,8 @@ class CascadeToxswa(base.Component):
     VERSION.changed("2.3.6", "Relieved severity of input attribute deviations")
     VERSION.changed("2.3.6", "Updated input descriptions and removed stub descriptions")
     VERSION.added("2.3.6", "Runtime warnings and notes regarding component and documentation status")
+    VERSION.added("2.3.7", "Extended output descriptions")
+    VERSION.added("2.3.7", "Outputs with scale space/reach report geometries")
 
     def __init__(self, name, observer, store):
         """
@@ -376,7 +379,10 @@ class CascadeToxswa(base.Component):
                             "the number of time steps as given by the [WaterDischarge](#WaterDischarge) input",
                             "the number of reaches as given by the `Reaches` input"
                         ),
-                        "chunks": "for fast retrieval of time series"
+                        "chunks": "for fast retrieval of time series",
+                        "element_names": (None, "according to the `MassLoadingSprayDrift` input"),
+                        "offset": ("the value of the `TimeSeriesStart` input", None),
+                        "geometries": (None, "according to the `MassLoadingSprayDrift` input")
                     }
                 ),
                 base.Output(
@@ -391,7 +397,10 @@ class CascadeToxswa(base.Component):
                             "the number of time steps as given by the [WaterDischarge](#WaterDischarge) input",
                             "the number of reaches as given by the `Reaches` input"
                         ),
-                        "chunks": "for fast retrieval of time series"
+                        "chunks": "for fast retrieval of time series",
+                        "element_names": (None, "according to the `MassLoadingSprayDrift` input"),
+                        "offset": ("the value of the `TimeSeriesStart` input", None),
+                        "geometries": (None, "according to the `MassLoadingSprayDrift` input")
                     }
                 ),
                 base.Output(
@@ -406,7 +415,10 @@ class CascadeToxswa(base.Component):
                             "the number of time steps as given by the [WaterDischarge](#WaterDischarge) input",
                             "the number of reaches as given by the `Reaches` input"
                         ),
-                        "chunks": "for fast retrieval of time series"
+                        "chunks": "for fast retrieval of time series",
+                        "element_names": (None, "according to the `MassLoadingSprayDrift` input"),
+                        "offset": ("the value of the `TimeSeriesStart` input", None),
+                        "geometries": (None, "according to the `MassLoadingSprayDrift` input")
                     }
                 )
             )
@@ -664,21 +676,24 @@ class CascadeToxswa(base.Component):
             shape=(number_time_steps, deposition_info.values.shape[1]),
             chunks=(min(65536, number_time_steps), 1),
             element_names=(None, deposition_info.element_names[1]),
-            offset=(time_series_start, None)
+            offset=(time_series_start, None),
+            geometries=(None, deposition_info.geometries[1])
         )
         self.outputs["ConLiqWatTgtAvgHrAvg"].set_values(
             np.ndarray,
             shape=(number_time_steps, deposition_info.values.shape[1]),
             chunks=(min(65536, number_time_steps), 1),
             element_names=(None, deposition_info.element_names[1]),
-            offset=(time_series_start, None)
+            offset=(time_series_start, None),
+            geometries=(None, deposition_info.geometries[1])
         )
         self.outputs["CntSedTgt1"].set_values(
             np.ndarray,
             shape=(number_time_steps, deposition_info.values.shape[1]),
             chunks=(min(65536, number_time_steps), 1),
             element_names=(None, deposition_info.element_names[1]),
-            offset=(time_series_start, None)
+            offset=(time_series_start, None),
+            geometries=(None, deposition_info.geometries[1])
         )
         for i, reach in enumerate(deposition_info.element_names[1].get_values()):
             water_concentration = np.zeros((number_time_steps, 1))
