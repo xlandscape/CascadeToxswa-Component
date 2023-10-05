@@ -19,6 +19,9 @@ class Toxswa(object):
     # Name of MFU template file
     mfsTemplateFile = "mfs_template.mfs"
 
+    # Name of MFL template file
+    mflTemplateFile = "mfl_template.mfl"
+    
     allowedOutputVars = [
         "MasWatLay",
         "MasDwnWatLay",
@@ -40,6 +43,12 @@ class Toxswa(object):
         "VelWatFlw",
         "QBou",
         "CntSedTgt1",
+        "MasDraWatLay",
+        "MasRnfWatLay",
+        "MasDwnWatLay",
+        "MasUpsWatLay",
+        "MasForWatLay",
+        "MasVolWatLay",
     ]
 
     # Command to run TOXSWA
@@ -127,7 +136,10 @@ class Toxswa(object):
         """
 
         if reach.skip or (
-            self.txw_exists(reach) and self.hyd_exists(reach) and self.mfs_exists(reach)
+            self.txw_exists(reach)
+            and self.hyd_exists(reach)
+            and self.mfs_exists(reach)
+            and self.mfl_exists(reach)
         ):
             return
 
@@ -181,6 +193,50 @@ class Toxswa(object):
 
         if not self.mfs_exists(reach):
             self.write_mfsFile(reach, hydrologyMassLoadingsTable)
+       if not self.mfl_exists(reach):
+            self.write_mflFile(reach, hydrologyMassLoadingsTable)
+
+    # def read_mflfile()
+    def write_mflFile(self, reach, hydrologyMassLoadingsTable):
+        massFlowTimestepFcn = lambda row: self.reach_massFlowTimestep(
+            reach, row["DepWat"], row["QBou"]
+        )
+
+        massFlowTimestepLength = hydrologyMassLoadingsTable.apply(
+            massFlowTimestepFcn, axis=1
+        )
+        mflDateTimeColumn = hydrologyMassLoadingsTable.Time.apply(
+            lambda x: x + datetime.timedelta(minutes=30)
+        )
+
+        mflTimestepColumnFcn = lambda x: (
+            x - (mflDateTimeColumn.iloc[0] - dt.timedelta(hours=1))
+        ).total_seconds() / (3600 * 24)
+        mflTimestepColumn = mflDateTimeColumn.apply(mflTimestepColumnFcn)
+        mflTable = pandas.concat(
+            [mflTimestepColumn, mflDateTimeColumn, hydrologyMassLoadingsTable.LoaDra],
+            axis=1,
+        )
+        mflTable.columns = ["timeStep", "dateTime", "LoaDra"]
+
+        # Read MFL template file
+        with open(
+            os.path.join(self.toxswaConfig["toxswaDir"], self.mflTemplateFile), "r"
+        ) as f:
+            mflTempl = f.read()
+
+        # Formatter to convert table to string to write to MFS file
+        datePrintFcn = lambda x: (x - datetime.timedelta(minutes=30)).strftime(
+            Toxswa.dateTimeFormat
+        )
+        fmt = [lambda x: "%5.3f" % x, datePrintFcn, lambda x: "%.9f" % x]
+        mflStr = mflTable.to_string(header=False, index=False, formatters=fmt)
+
+        with open(
+            os.path.join(self.workDir, "Reach" + str(reach.ID) + ".mfl"), "w"
+        ) as mflFile:
+            mflFile.write(mflTempl + "\n")
+            mflFile.write(mflStr)
 
     def write_mfsFile(self, reach, hydrologyMassLoadingsTable):
         massFlowTimestepFcn = lambda row: self.reach_massFlowTimestep(
@@ -421,7 +477,7 @@ class Toxswa(object):
         timeStart = hydrologyMassLoadingsTable.Time[0]
         timeStep = [
             (time - timeStart).total_seconds() / secondsPerDay
-            for i, time in hydrologyMassLoadingsTable.Time.iteritems()
+            for i, time in hydrologyMassLoadingsTable.Time.items()
         ]
         outputTable = pandas.DataFrame(columns=["Time", "Date", "QBou", "DepWat"])
         outputTable.Time = timeStep
@@ -480,7 +536,10 @@ class Toxswa(object):
         return os.path.isfile(
             os.path.join(self.workDir, "Reach" + str(reach.ID) + ".mfu")
         )
-
+    def mfl_exists(self, reach):
+        return os.path.isfile(
+            os.path.join(self.workDir, "Reach" + str(reach.ID) + ".mfl")
+        )
     def init(self, reach):
         report = {"reachID": reach.ID, "status": None}
         if reach.skip:
