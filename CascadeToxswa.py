@@ -608,7 +608,7 @@ class CascadeToxswa(base.Component):
             substance_file,
         )
         self.run_cascade_toxswa(parameterization_file, processing_path)
-        self.read_outputs(os.path.join(processing_path, "experiments", "e1"))
+        self.read_outputs(os.path.join(processing_path))
 
     def prepare_hydrological_data(self, output_path, reaches_file):
         """
@@ -686,22 +686,22 @@ class CascadeToxswa(base.Component):
                     f2.write(
                         "Time,QBou,DepWat,LoaDrf,LoaDra\n-,m3.s-1,m,mg.m-2,g.m-1\n"
                     )
-                for t in range(number_time_steps):
-                    if t % 24 == 11:
-                        loading_drift = mass_loading_spray_drift[int((t - 11) / 24)]
-                        loading_drainage = mass_loading_drainage[int((t - 11) / 24)]
-                        if loading_drift + loading_drainage > 0:
-                            exposed = True
-                    else:
-                        loading_drift = 0
-                        loading_drainage = 0
-                    f2.write(
-                        f"{(time_series_start + datetime.timedelta(hours=t)).strftime('%d-%b-%Y-%Hh%M')},"
-                    )
-                    f2.write(f"{format(float(discharge[t]), 'E')},")
-                    f2.write(f"{round(float(depth[t]), 3)},")
-                    f2.write(f"{format(float(loading_drift), 'E')},")
-                    f2.write(f"{format(float(loading_drainage), 'E')}\n")
+                    for t in range(number_time_steps):
+                        if t % 24 == 11:
+                            loading_drift = mass_loading_spray_drift[int((t - 11) / 24)]
+                            loading_drainage = mass_loading_drainage[int((t - 11) / 24)]
+                            if loading_drift + loading_drainage > 0:
+                                exposed = True
+                        else:
+                            loading_drift = 0
+                            loading_drainage = 0
+                        f2.write(
+                            f"{(time_series_start + datetime.timedelta(hours=t)).strftime('%d-%b-%Y-%Hh%M')},"
+                        )
+                        f2.write(f"{format(float(discharge[t]), 'E')},")
+                        f2.write(f"{round(float(depth[t]), 3)},")
+                        f2.write(f"{format(float(loading_drift), 'E')},")
+                        f2.write(f"{format(float(loading_drainage), 'E')}\n")
                 f.write(f"{exposed}\n")
 
     def prepare_temperature(self, output_file):
@@ -847,7 +847,7 @@ class CascadeToxswa(base.Component):
             f.write("substanceNames = CMP_A\n")
             f.write("timeStepMin = 10\n")
             f.write("outputVars = ConLiqWatTgtAvg,ConLiqWatTgtAvgHrAvg,CntSedTgt1\n")
-            f.write("keepOrigOutFiles = False\n")
+            f.write("keepOrigOutFiles = True\n")
             # noinspection SpellCheckingInspection
             f.write("massFlowTimestepParam = 1\n")
             # noinspection SpellCheckingInspection
@@ -925,6 +925,7 @@ class CascadeToxswa(base.Component):
             water_concentration_hr = np.zeros((number_time_steps, 1))
             sediment_concentration = np.zeros((number_time_steps, 1))
             with open(os.path.join(output_path, f"R{reach}.csv")) as f:
+                f.readline()
                 f.readline()
                 for t in range(number_time_steps):
                     fields = f.readline().split(",")

@@ -21,7 +21,7 @@ class Toxswa(object):
 
     # Name of MFL template file
     mflTemplateFile = "mfl_template.mfl"
-    
+
     allowedOutputVars = [
         "MasWatLay",
         "MasDwnWatLay",
@@ -193,7 +193,7 @@ class Toxswa(object):
 
         if not self.mfs_exists(reach):
             self.write_mfsFile(reach, hydrologyMassLoadingsTable)
-       if not self.mfl_exists(reach):
+        if not self.mfl_exists(reach):
             self.write_mflFile(reach, hydrologyMassLoadingsTable)
 
     # def read_mflfile()
@@ -536,10 +536,12 @@ class Toxswa(object):
         return os.path.isfile(
             os.path.join(self.workDir, "Reach" + str(reach.ID) + ".mfu")
         )
+
     def mfl_exists(self, reach):
         return os.path.isfile(
             os.path.join(self.workDir, "Reach" + str(reach.ID) + ".mfl")
         )
+
     def init(self, reach):
         report = {"reachID": reach.ID, "status": None}
         if reach.skip:

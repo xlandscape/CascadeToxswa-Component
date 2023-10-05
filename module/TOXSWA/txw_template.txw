@@ -111,7 +111,7 @@ end_table
 <substanceProperties>
 
 *** Section 8: Loadings
-MFU      OptLoa
+CASCADE      OptLoa
 Yes      OptLoaStr
 table Loadings
 end_table
