@@ -848,7 +848,7 @@ class CascadeToxswa(base.Component):
             f.write(f"temperatureFile = {temperature_file}\n")
             f.write(f"substanceFile = {substance_file}\n")
             f.write("substanceNames = CMP_A\n")
-            f.write("timeStepMin = 10\n")
+            f.write("timeStepMin = 0.5\n")
             f.write("outputVars = ConLiqWatTgtAvg,ConLiqWatTgtAvgHrAvg,CntSedTgt1\n")
             f.write("keepOrigOutFiles = True\n")
             # noinspection SpellCheckingInspection
