@@ -1,6 +1,19 @@
-*  mfl file
-*  Lineic mass flux from drainage time step: 1
-*
-*                        
-*  Time  Date        Time  LoaDra
-*  (-)   (-)                   (g.m-1)
+* ------------------------------------------------------------------------------			
+* TEST MFL FILE FOR INTEGRATING PEARL TO xAQUATICS  (c) WENR, PBL and RIVM			
+* ------------------------------------------------------------------------------			
+* 			
+*			
+* Number of substances: 1			
+* Parent substance: CMP_A			
+* Drain mass flux data for substance CMP_A			
+* The volume fluxes of liquid in PEARL (expressed as g.d-1) are converted to fluxes expressed as g.h-1 
+* as required by TOXSWA			
+* Legend to columns:			
+*  Time: Time since start of simulation (d)			
+*  DateTime: Date and time			
+*  FlmLenDra: Leneic mass flux due to drainage (g/m/h)			
+*  FlmLenRun: Leneic mass flux due to runoff (g/m/h) (COLUMN IS FILLE WITH ZEROS)			
+*			
+* The daily average water fluxes and concentrations by PEARL have been converted to 24 equal hourly values,			
+* because the meteorological input data are on a daily basis			
+*   Time   Date            FlmLenDra     FlmLenRun  

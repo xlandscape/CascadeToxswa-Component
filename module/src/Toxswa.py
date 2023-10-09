@@ -213,11 +213,17 @@ class Toxswa(object):
             x - (mflDateTimeColumn.iloc[0] - dt.timedelta(hours=1))
         ).total_seconds() / (3600 * 24)
         mflTimestepColumn = mflDateTimeColumn.apply(mflTimestepColumnFcn)
+
         mflTable = pandas.concat(
-            [mflTimestepColumn, mflDateTimeColumn, hydrologyMassLoadingsTable.LoaDra],
+            [
+                mflTimestepColumn,
+                mflDateTimeColumn,
+                hydrologyMassLoadingsTable.LoaDra,
+                hydrologyMassLoadingsTable.LoaRnf,
+            ],
             axis=1,
         )
-        mflTable.columns = ["timeStep", "dateTime", "LoaDra"]
+        mflTable.columns = ["timeStep", "dateTime", "LoaDra", "LoaRnf"]
 
         # Read MFL template file
         with open(
@@ -229,7 +235,12 @@ class Toxswa(object):
         datePrintFcn = lambda x: (x - datetime.timedelta(minutes=30)).strftime(
             Toxswa.dateTimeFormat
         )
-        fmt = [lambda x: "%5.3f" % x, datePrintFcn, lambda x: "%.9f" % x]
+        fmt = [
+            lambda x: "%5.3f" % x,
+            datePrintFcn,
+            lambda x: "%.9f" % x,
+            lambda x: "%.9f" % x,
+        ]
         mflStr = mflTable.to_string(header=False, index=False, formatters=fmt)
 
         with open(

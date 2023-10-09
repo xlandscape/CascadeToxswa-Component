@@ -684,24 +684,27 @@ class CascadeToxswa(base.Component):
                 with open(os.path.join(output_path, f"R{key_r}.csv"), "w") as f2:
                     # noinspection GrazieInspection
                     f2.write(
-                        "Time,QBou,DepWat,LoaDrf,LoaDra\n-,m3.s-1,m,mg.m-2,g.m-1\n"
+                        "Time,QBou,DepWat,LoaDrf,LoaDra,LoaRnf\n-,m3.s-1,m,mg.m-2,g.m-1,g.m-1\n"
                     )
                     for t in range(number_time_steps):
                         if t % 24 == 11:
                             loading_drift = mass_loading_spray_drift[int((t - 11) / 24)]
                             loading_drainage = mass_loading_drainage[int((t - 11) / 24)]
-                            if loading_drift + loading_drainage > 0:
+                            loading_runoff = 0
+                            if loading_drift + loading_drainage + loading_runoff > 0:
                                 exposed = True
                         else:
                             loading_drift = 0
                             loading_drainage = 0
+                            loading_runoff = 0
                         f2.write(
                             f"{(time_series_start + datetime.timedelta(hours=t)).strftime('%d-%b-%Y-%Hh%M')},"
                         )
                         f2.write(f"{format(float(discharge[t]), 'E')},")
                         f2.write(f"{round(float(depth[t]), 3)},")
                         f2.write(f"{format(float(loading_drift), 'E')},")
-                        f2.write(f"{format(float(loading_drainage), 'E')}\n")
+                        f2.write(f"{format(float(loading_drainage), 'E')},")
+                        f2.write(f"{format(float(loading_runoff), 'E')}\n")
                 f.write(f"{exposed}\n")
 
     def prepare_temperature(self, output_file):
