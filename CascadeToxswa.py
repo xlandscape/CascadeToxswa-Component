@@ -855,7 +855,7 @@ class CascadeToxswa(base.Component):
             f.write("massFlowTimestepParam = 1\n")
             # noinspection SpellCheckingInspection
             f.write("minMassFlowTimestep = 0.1\n")
-            f.write("deleteMfuFiles = True\n")
+            f.write("deleteMfuFiles = False\n")
 
     def run_cascade_toxswa(self, parameterization_file, processing_path):
         """
