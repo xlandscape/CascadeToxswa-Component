@@ -678,7 +678,7 @@ class CascadeToxswa(base.Component):
                 )
                 mass_loading_drainage = (
                     self.inputs["LineicMassLoadingDrainage"]
-                    .read(slices=(slice(int(number_time_steps / 24)), i))
+                    .read(slices=(slice(int(number_time_steps)), i))
                     .values
                 )
                 with open(os.path.join(output_path, f"R{key_r}.csv"), "w") as f2:
@@ -689,14 +689,15 @@ class CascadeToxswa(base.Component):
                     for t in range(number_time_steps):
                         if t % 24 == 11:
                             loading_drift = mass_loading_spray_drift[int((t - 11) / 24)]
-                            loading_drainage = mass_loading_drainage[int((t - 11) / 24)]
+
                             loading_runoff = 0
                             if loading_drift + loading_drainage + loading_runoff > 0:
                                 exposed = True
                         else:
                             loading_drift = 0
-                            loading_drainage = 0
+
                             loading_runoff = 0
+                        loading_drainage = mass_loading_drainage[t]
                         f2.write(
                             f"{(time_series_start + datetime.timedelta(hours=t)).strftime('%d-%b-%Y-%Hh%M')},"
                         )
