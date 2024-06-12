@@ -1,5 +1,5 @@
 import pandas, numpy as np, glob, os, progressbar as pgb, datetime as dt, re
-from PyPDF2 import PdfFileMerger
+from PyPDF2 import PdfMerger
 from matplotlib.cm import ScalarMappable
 from matplotlib.colors import Normalize
 import matplotlib.pyplot as plt
@@ -39,7 +39,7 @@ def concGraph(catchment, timeStepRange, nPlot=100):
         )
 
     graphFiles = glob.glob("conc_*.pdf")
-    pdf_merger = PdfFileMerger()
+    pdf_merger = PdfMerger()
     pdf_merger.setPageLayout("/SinglePage")
     for file in graphFiles:
         pdf_merger.append(file)
@@ -104,8 +104,8 @@ def concMap(
         return
 
     graphFiles = glob.glob(os.path.join(outputDir, baseName + "_*" + format))
-    pdf_merger = PdfFileMerger()
-    pdf_merger.setPageLayout("/SinglePage")
+    pdf_merger = PdfMerger()
+    pdf_merger.set_page_layout("/SinglePage")
     for file in graphFiles:
         pdf_merger.append(file)
     with open(os.path.join(outputDir, fileName), "wb") as fileobj:
