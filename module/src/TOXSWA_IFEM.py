@@ -2,9 +2,7 @@
 # NB: As indicated in requirements.txt, the heft package should be installed from github repo
 # https://github.com/mbraakhekke/heft.git@relative_imports_fix (use pip install git+https://...)
 # The version on PiPy does not work due to incorrect syntax for local imports
-import os
-os.environ["USERPROFILE"] = r"C:\Users\thoue002"
-import shutil, pandas, sys, numpy, datetime as dt, time, util, configparser as cp
+import os, shutil, pandas, sys, numpy, datetime as dt, time, util, configparser as cp
 import postprocess
 from util import writeOutputTable
 from Catchment import Catchment
