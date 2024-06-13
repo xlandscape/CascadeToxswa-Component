@@ -19,6 +19,19 @@
         #define NPY_SIZEOF_LONG         4
         #define NPY_SIZEOF_PY_INTPTR_T  4
     #endif
+
+    #undef NPY_SIZEOF_LONGDOUBLE
+    #undef NPY_SIZEOF_COMPLEX_LONGDOUBLE
+
+    #ifdef __x86_64
+        #define NPY_SIZEOF_LONGDOUBLE         16
+        #define NPY_SIZEOF_COMPLEX_LONGDOUBLE 32
+    #elif defined(__arm64__)
+        #define NPY_SIZEOF_LONGDOUBLE         8
+        #define NPY_SIZEOF_COMPLEX_LONGDOUBLE 16
+    #else
+        #error "unknown architecture"
+    #endif
 #endif
 
 /**
@@ -37,5 +50,11 @@
 #define NPY_1_13_API_VERSION 0x00000008
 #define NPY_1_14_API_VERSION 0x00000008
 #define NPY_1_15_API_VERSION 0x00000008
+#define NPY_1_16_API_VERSION 0x00000008
+#define NPY_1_17_API_VERSION 0x00000008
+#define NPY_1_18_API_VERSION 0x00000008
+#define NPY_1_19_API_VERSION 0x00000008
+#define NPY_1_20_API_VERSION 0x0000000e
+#define NPY_1_21_API_VERSION 0x0000000e
 
 #endif
