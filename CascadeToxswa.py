@@ -880,11 +880,12 @@ class CascadeToxswa(base.Component):
         python_script = os.path.join(
             os.path.dirname(__file__), "module", "src", "TOXSWA_IFEM.py"
         )
+        env_vars = {key: os.getenv(key) for key in ["WINDIR", "USERPROFILE"]}
         base.run_process(
             (python_exe, python_script, parameterization_file),
             processing_path,
             self.default_observer,
-            {"PATH": ""},
+            env_vars | {"PATH": ""},
         )
 
     def read_outputs(self, output_path):
