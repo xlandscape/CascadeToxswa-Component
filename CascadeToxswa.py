@@ -608,7 +608,7 @@ class CascadeToxswa(base.Component):
             substance_file,
         )
         self.run_cascade_toxswa(parameterization_file, processing_path)
-        self.read_outputs(os.path.join(processing_path))
+        self.read_outputs(os.path.join(processing_path, "experiments", "e1"))
 
     def prepare_hydrological_data(self, output_path, reaches_file):
         """
