@@ -42,8 +42,6 @@ class CMF_TOXSWA_coupler(object):
         
         self.reachTable = pandas.read_csv(os.path.join(self.config['general']['inputDir'],self.config['general']['reachFile']),
                                           comment = "#", header = 0, skiprows = [1], index_col = 0)
-        reachSel = config['general']['reachSelection'].split(',')
-        if not reachSel[0] == 'all': self.reachTable = self.reachTable.loc[reachSel,]
         nReach = self.reachTable.shape[0]
 
         # initialize the catchment instance

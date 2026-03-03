@@ -616,7 +616,6 @@ class CascadeToxswa(base.Component):
             f.write(f"nWorker = {self.inputs['NumberWorkers'].read().values}\n")
             f.write(f"inputDir = {processing_path}\n")
             f.write("experimentName = e1\n")
-            f.write("reachSelection = all\n")
             f.write(f"reachFile = {reach_file}\n")
             f.write(f"startDateSim = {self.inputs['TimeSeriesStart'].read().values.strftime('%d-%b-%Y')}\n")
             f.write(f"endDateSim = {end_date_sim}\n")
